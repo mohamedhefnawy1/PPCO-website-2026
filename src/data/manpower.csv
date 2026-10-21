@@ -1,0 +1,47 @@
+Position;Availability;Position;Availability
+General Manager;3;Professional Painter / Coater;18
+Regional Manager;4;Professional Plumber;15
+Operations Manager;5;Professional Sand Blaster;15
+Safety Manager;9;Lineman;35
+QA/QC Manager;13;Storekeeper;21
+Environmental Manager;3;Material Man;11
+Business Development Manager;2;Yard In-Charge;36
+Finance Manager;2;Camp Boss;11
+Planning Manager;1;Fire Watch;41
+Logistics Manager;2;Ambulance Driver;6
+Transportation Manager;1;Male Nurse;6
+Maintenance Manager;3;Paramedic;6
+Facility Manager;2;Scheduler;12
+Project Manager;13;Cleaner;38
+Construction Manager;27;Helper;606
+Safety Supervisor;26;Certified Heavy Driver;530
+QA/QC Supervisor;18;Certified Equipment Operator;570
+Construction Supervisor;14;Landscape Manager;1
+Maintenance Supervisor;9;Hardscape Manager;1
+Logistics Supervisor;21;Service Line Manager;1
+Electrical Foreman & Supervisor;18;QA/QC Civil;17
+Civil Foreman & Supervisor;38;QA/QC Mechanical;15
+Site Supervisor;21;QA/QC Welding;5
+Piping Supervisor;16;QA/QC Coating;3
+Lifting Supervisor;5;QA/QC Electrical & Instrumentation;6
+Project Engineer;36;QA/QC Communication;2
+Civil Engineer;27;CP & OHPL Foreman;8
+Mechanical Engineer;18;Coating Crew Supervisor;6
+Electrical Engineer;16;Pest Control Supervisor;2
+Instrumentation Engineer;2;Rigger I;1
+Cost Engineer;9;Rigger III;8
+Planning Engineer;11;NDT Coordinator;5
+Procurement Engineer;4;Logistics Coordinator;2
+Technical Engineer;12;Internal ISO Auditor;2
+IT Engineer;9;Material Specialist;9
+Surveyor;15;Mechanical Foreman;21
+Senior Surveyor;11;Professional Metal Technician;30
+Industrial Electrical Technician;25;Cable Splicer;5
+Instrument Technician;5;Anode Drilling Machine Operator;10
+Hydrotest Technician;12;Ground Drilling Machine Operator;4
+"Professional Welder (Multi, 6G, TIG)";80;Piling Rig Machine Operator;12
+Professional Pipe Fitter;16;Fence Installer;23
+Professional Steel Fabricator;25;Housekeeping Supervisor;5
+Professional Steel Fitter & Fixer;40;Cleaning Supervisor;11
+Professional Carpenter;24;Maintenance Specialist & Mechanics;43
+Professional Mason;51;;

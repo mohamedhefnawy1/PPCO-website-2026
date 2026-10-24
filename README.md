@@ -99,7 +99,7 @@ On the Contact page (`#enquiry`). Every "Request a Quote" link opens it with the
 
 ## Hero film
 
-The files are in `public/video/`: `ppco-hero.mp4` (1280×720, desktop), `ppco-hero-mobile.mp4` (854×480, phones) and `ppco-hero-poster.jpg` (shown while the film loads). The film plays muted, as a background. To replace it, re-encode the new file the same way:
+The files are in `public/video/`: `ppco-hero.mp4` (1280×720, desktop), `ppco-hero-mobile.mp4` (854×480, phones) and `ppco-hero-poster.jpg` (shown while the film loads). The film plays muted, as a background, and recovers on its own if it fails to start: a failed or stalled download is retried (up to four times, and again when the connection comes back), and if the browser refuses to autoplay (for example iPhone Low Power Mode) it starts on the visitor's first tap. The Worker serves `/video/*` with proper byte-range (206) replies, which Safari needs and which let an interrupted download resume; `npm run build` records the file sizes it uses in `worker/video-sizes.json`. To replace it, re-encode the new file the same way:
 
 ```bash
 ffmpeg -i source.mp4 -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p -an -movflags +faststart public/video/ppco-hero.mp4
@@ -125,7 +125,7 @@ Not used, because nothing in this work called for them: garden-skills (its web-d
 
 ## Publishing (Cloudflare)
 
-The site deploys as a **Cloudflare Worker with static assets** (`wrangler.jsonc`). `npx wrangler deploy` runs `npm run build` (static export to `out/`), uploads `out/` and the small Worker in `worker/index.ts`, which only handles the enquiry form (`/api/enquiry`). Pages are served by Cloudflare's asset handling, with `public/_headers` and the 404 page. Because `wrangler.jsonc` exists, Cloudflare no longer tries to convert the project to OpenNext.
+The site deploys as a **Cloudflare Worker with static assets** (`wrangler.jsonc`). `npx wrangler deploy` runs `npm run build` (static export to `out/`), uploads `out/` and the small Worker in `worker/index.ts`, which only handles the enquiry form (`/api/enquiry`) and byte-range requests for the hero videos (`/video/*`). Pages are served by Cloudflare's asset handling, with `public/_headers` and the 404 page. Because `wrangler.jsonc` exists, Cloudflare no longer tries to convert the project to OpenNext.
 
 In Cloudflare (Workers & Pages → your Worker → Settings → Builds), with the GitHub repository connected:
 

@@ -33,17 +33,87 @@ export default function HomeHero({ clients }: { clients: string[] }) {
     setSrc(window.matchMedia("(max-width: 767px)").matches ? VIDEO.mobile : VIDEO.desktop);
   }, []);
 
-  // Play only on screen, in a visible tab, and not for reduced-motion visitors.
+  // Play only on screen, in a visible tab, and not for reduced-motion visitors, and recover on our own
+  // from the ways a background video can fail to start (no refresh needed):
+  // - a failed or interrupted download: reload the file (with a cache-busting query, so a broken
+  //   cached copy isn't reused), up to 4 times with increasing delays, and again when back online;
+  // - a stall (no progress for 8s while it should be playing): treat it like a failed download;
+  // - play() refused by the browser (e.g. iOS Low Power Mode): start on the visitor's first tap or key;
+  // - play() interrupted before the file was ready: try again as soon as it can play.
   useEffect(() => {
     const v = videoRef.current;
     if (!v || !src || reduce) return;
     let onScreen = true;
-    const sync = () => {
-      if (onScreen && document.visibilityState === "visible") {
-        v.muted = true;
-        v.play().catch(() => {});
-      } else v.pause();
+    let attempts = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    let lastTime = -1;
+    let stalledFor = 0;
+    let disposed = false;
+
+    v.defaultMuted = true;
+    v.muted = true;
+    v.setAttribute("muted", "");
+
+    const wanted = () => onScreen && document.visibilityState === "visible";
+    const gestureEvents = ["pointerdown", "keydown", "touchend"] as const;
+    const onGesture = () => {
+      gestureEvents.forEach((ev) => window.removeEventListener(ev, onGesture));
+      tryPlay();
     };
+    const tryPlay = () => {
+      if (disposed || !wanted()) return;
+      v.muted = true;
+      v.play().catch((err: DOMException) => {
+        if (err?.name === "NotAllowedError") gestureEvents.forEach((ev) => window.addEventListener(ev, onGesture, { once: true, passive: true }));
+        // AbortError and friends: the "canplay" listener below retries when the video is ready.
+      });
+    };
+    const sync = () => (wanted() ? tryPlay() : v.pause());
+
+    const reload = () => {
+      if (disposed || attempts >= 4) return;
+      attempts += 1;
+      clearTimeout(retryTimer);
+      retryTimer = setTimeout(() => {
+        const resumeAt = v.currentTime || 0;
+        v.src = `${src}?r=${Date.now()}`;
+        v.load();
+        if (resumeAt > 0) v.addEventListener("loadedmetadata", () => (v.currentTime = resumeAt), { once: true });
+        tryPlay();
+      }, 1000 * 2 ** (attempts - 1)); // 1s, 2s, 4s, 8s
+    };
+    const onError = () => reload();
+    const onOnline = () => {
+      if (v.error || v.networkState === v.NETWORK_NO_SOURCE) {
+        attempts = Math.min(attempts, 3);
+        reload();
+      } else tryPlay();
+    };
+    const onPlaying = () => {
+      attempts = 0;
+      stalledFor = 0;
+    };
+
+    // Watchdog: if it should be playing but the picture hasn't moved for 8s, recover.
+    const watchdog = setInterval(() => {
+      if (!wanted()) return void (stalledFor = 0);
+      if (v.currentTime !== lastTime) {
+        lastTime = v.currentTime;
+        stalledFor = 0;
+        return;
+      }
+      stalledFor += 2;
+      if (v.paused && v.readyState >= 3) tryPlay();
+      else if (stalledFor >= 8) {
+        stalledFor = 0;
+        reload();
+      }
+    }, 2000);
+
+    v.addEventListener("canplay", tryPlay);
+    v.addEventListener("playing", onPlaying);
+    v.addEventListener("error", onError);
+    window.addEventListener("online", onOnline);
     const io = new IntersectionObserver(([e]) => {
       onScreen = e.isIntersecting;
       sync();
@@ -52,7 +122,15 @@ export default function HomeHero({ clients }: { clients: string[] }) {
     document.addEventListener("visibilitychange", sync);
     sync();
     return () => {
+      disposed = true;
+      clearTimeout(retryTimer);
+      clearInterval(watchdog);
       io.disconnect();
+      v.removeEventListener("canplay", tryPlay);
+      v.removeEventListener("playing", onPlaying);
+      v.removeEventListener("error", onError);
+      window.removeEventListener("online", onOnline);
+      gestureEvents.forEach((ev) => window.removeEventListener(ev, onGesture));
       document.removeEventListener("visibilitychange", sync);
     };
   }, [src, reduce]);

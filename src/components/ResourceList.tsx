@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
+import { motion } from "framer-motion";
 import Counter from "./Counter";
 import { tc } from "@/lib/text";
 
@@ -43,7 +44,7 @@ export default function ResourceList({
         <div className="grid gap-8 border-b border-line pb-10 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-5">
             <p className="text-sm font-medium text-muted">{tc(totalLabel)}</p>
-            <p className="heading mt-2 text-[clamp(3rem,6vw,5.5rem)] text-indigo">
+            <p className="heading mt-2 text-[clamp(3rem,6vw,5.5rem)] text-ink">
               <Counter value={total} suffix={suffix} />
             </p>
             <p className="mt-2 text-muted">
@@ -59,7 +60,7 @@ export default function ResourceList({
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={searchLabel}
-                className="w-full border border-line bg-white py-3 pl-10 pr-10 outline-none transition-colors focus:border-indigo"
+                className="w-full border border-line bg-white py-3 pl-10 pr-10 outline-none transition-colors focus:border-ink"
               />
               {query && (
                 <button type="button" onClick={() => setQuery("")} className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center text-muted" aria-label="Clear search">
@@ -80,7 +81,7 @@ export default function ResourceList({
                   type="button"
                   aria-pressed={sort === k}
                   onClick={() => setSort(k)}
-                  className={`flex-1 whitespace-nowrap px-4 py-3 text-sm transition-colors ${sort === k ? "bg-indigo text-white" : "bg-white hover:bg-mist"}`}
+                  className={`flex-1 whitespace-nowrap px-4 py-3 text-sm transition-colors ${sort === k ? "bg-ink text-white" : "bg-white hover:bg-mist"}`}
                 >
                   {l}
                 </button>
@@ -96,16 +97,31 @@ export default function ResourceList({
               <span>{columns[1]}</span>
             </div>
           ))}
-          {rows.map((r) => (
-            <div key={r.item} className="border-t border-line py-3.5">
+          {rows.map((r, i) => (
+            <motion.div
+              key={r.item}
+              layout
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-5% 0px" }}
+              transition={{ duration: 0.5, delay: (i % 2) * 0.05, layout: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } }}
+              className="group border-t border-line py-3.5"
+            >
               <div className="flex items-baseline justify-between gap-6">
                 <span>{r.item}</span>
-                <span className="tabular font-medium">{r.count.toLocaleString("en-US")}</span>
+                <span className="tabular font-medium transition-colors group-hover:text-ink">{r.count.toLocaleString("en-US")}</span>
               </div>
               <div className="mt-2 h-1 bg-mist" aria-hidden>
-                <div className="h-full bg-indigo/70" style={{ width: `${Math.max(2, (r.count / max) * 100)}%` }} />
+                <motion.div
+                  className="h-full origin-left bg-ink/70 transition-colors group-hover:bg-green"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+                  style={{ width: `${Math.max(2, (r.count / max) * 100)}%` }}
+                />
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
         {rows.length === 0 && <p className="py-10 text-center text-muted">Nothing matches “{query}”. Try a shorter search.</p>}

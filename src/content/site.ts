@@ -124,20 +124,57 @@ export const home = {
       { title: "Project Management & Supervision", text: "End-to-end oversight for efficient delivery.", icon: "clipboard" },
     ],
   },
+  // New for the redesign: heading for the interactive locations map (the live site shows a static map image).
+  map: {
+    eyebrow: "OUR LOCATIONS",
+    title: "Where We Work",
+    body: "Select a location to see its role and the projects PPCO has delivered there.",
+  },
   clients: {
     eyebrow: "CLIENTS & PARTNERS",
     title: "Trusted by Industry Leaders",
     body: "Over the years, PPCO has partnered with key national organizations and mega-projects that shape the Kingdom’s progress.",
+    // Each logo file is a 500×500 PNG with its own empty margin; `box` is the logo's outline in that file
+    // ([x, y, width, height], measured from the images) so every logo can be fitted to its tile evenly.
     logos: [
-      "2025/12/14.png", "2025/12/19.png", "2025/12/18.png", "2024/05/27.png", "2024/05/23.png",
-      "2024/05/Untitled-design-1.png", "2024/05/24.png", "2024/05/16-1.png", "2024/05/26.png", "2024/05/19.png",
-      "2024/05/17-1.png", "2025/12/9.png", "2025/12/15.png", "2025/12/11.png", "2025/12/12.png",
-      "2025/12/10.png", "2025/12/20.png", "2024/05/22.png", "2025/12/13.png", "2025/12/23.png",
-      "2025/12/22.png", "2025/12/21.png", "2025/12/38.png", "2025/12/37.png", "2025/12/36.png",
-      "2025/12/34.png", "2025/12/35.png", "2025/12/33.png", "2025/12/32.png", "2025/12/31.png",
-      "2025/12/30.png", "2025/12/29.png", "2025/12/28.png", "2025/12/27.png", "2025/12/26.png",
-      "2025/12/25.png", "2025/12/24.png",
-    ].map(up),
+    { src: up("2025/12/14.png"), box: [76, 76, 347, 349] },
+    { src: up("2025/12/19.png"), box: [158, 144, 191, 205] },
+    { src: up("2025/12/18.png"), box: [96, 166, 307, 169] },
+    { src: up("2024/05/27.png"), box: [94, 52, 311, 395] },
+    { src: up("2024/05/23.png"), box: [54, 166, 391, 167] },
+    { src: up("2024/05/Untitled-design-1.png"), box: [72, 194, 355, 111] },
+    { src: up("2024/05/24.png"), box: [48, 148, 403, 203] },
+    { src: up("2024/05/16-1.png"), box: [124, 120, 253, 261] },
+    { src: up("2024/05/26.png"), box: [148, 76, 207, 345] },
+    { src: up("2024/05/19.png"), box: [78, 126, 343, 247] },
+    { src: up("2024/05/17-1.png"), box: [76, 118, 363, 263] },
+    { src: up("2025/12/9.png"), box: [48, 200, 403, 85] },
+    { src: up("2025/12/15.png"), box: [100, 100, 299, 299] },
+    { src: up("2025/12/11.png"), box: [80, 108, 339, 285] },
+    { src: up("2025/12/12.png"), box: [48, 158, 403, 185] },
+    { src: up("2025/12/10.png"), box: [118, 150, 263, 199] },
+    { src: up("2025/12/20.png"), box: [110, 160, 279, 179] },
+    { src: up("2024/05/22.png"), box: [82, 202, 333, 97] },
+    { src: up("2025/12/13.png"), box: [64, 194, 375, 115] },
+    { src: up("2025/12/23.png"), box: [48, 186, 403, 127] },
+    { src: up("2025/12/22.png"), box: [48, 192, 403, 115] },
+    { src: up("2025/12/21.png"), box: [76, 84, 349, 331] },
+    { src: up("2025/12/38.png"), box: [96, 48, 309, 403] },
+    { src: up("2025/12/37.png"), box: [48, 200, 403, 101] },
+    { src: up("2025/12/36.png"), box: [48, 78, 403, 343] },
+    { src: up("2025/12/34.png"), box: [48, 74, 403, 353] },
+    { src: up("2025/12/35.png"), box: [48, 210, 403, 79] },
+    { src: up("2025/12/33.png"), box: [148, 50, 203, 399] },
+    { src: up("2025/12/32.png"), box: [48, 114, 403, 271] },
+    { src: up("2025/12/31.png"), box: [50, 164, 401, 171] },
+    { src: up("2025/12/30.png"), box: [48, 160, 403, 181] },
+    { src: up("2025/12/29.png"), box: [48, 180, 403, 139] },
+    { src: up("2025/12/28.png"), box: [48, 144, 403, 211] },
+    { src: up("2025/12/27.png"), box: [48, 188, 403, 123] },
+    { src: up("2025/12/26.png"), box: [48, 172, 403, 155] },
+    { src: up("2025/12/25.png"), box: [66, 102, 369, 297] },
+    { src: up("2025/12/24.png"), box: [48, 192, 403, 115] },
+    ] as { src: string; box: [number, number, number, number] }[],
   },
   cta: {
     title: "We’re Here to Support Your Project",
@@ -395,7 +432,19 @@ export const contactPage = {
       lines: ["Above Aljazeerah، Bank، شارع دجلة،، Riyadh 13315, Saudi Arabia Takasusi Street"],
     },
   ],
-  mapEmbed: "https://maps.google.com/maps?q=Projects%20Pioneers%20Co.&t=m&z=11&output=embed&iwloc=near",
+  /**
+   * Exact positions, from PPCO's own Google Maps listings (checked October 2026):
+   * "Projects Pioneers Co." (Al-Shula, Dammam), "Projects Pioneers Co رواد المشاريع" (Dijlah Street, Riyadh)
+   * and "Projects Pioneers Company (PPCO)" (NEOM). Site offices without a listing have no exact position,
+   * so they are shown but not selectable on the map.
+   */
+  mapPoints: {
+    dammam: { name: "Dammam", role: "Head office", lat: 26.3666508, lng: 50.0937452 },
+    riyadh: { name: "Riyadh", role: "Regional office", lat: 24.7914131, lng: 46.6481889 },
+    neom: { name: "NEOM", role: "Site office", lat: 28.112124, lng: 35.3094649 },
+  } as Record<string, { name: string; role: string; lat: number; lng: number }>,
+  /** Which site offices (by their label above) have an exact position. */
+  siteOfficePoints: { NEOM: "neom", RIYADH: "riyadh" } as Record<string, string>,
 };
 
 /* ───────────────────────── Footer ───────────────────────── */
@@ -414,4 +463,29 @@ export const footer = {
     { label: "Equipment Supply & Maintenance", href: "/list-of-equipment" },
     { label: "Quality & Safety Support", href: "/training-and-safety" },
   ],
+};
+
+/* ───────────────────────── Enquiry / RFQ form ─────────────────────────
+ * New for the redesign (the live site has no form). Wording is ours, kept plain so it can be edited here. */
+
+/** Link to the request-for-quote form, optionally with a service preselected. */
+export const quoteHref = (service?: string) => `/contact/?type=quote${service ? `&service=${service}` : ""}#enquiry`;
+
+export const enquiry = {
+  title: "Send us your request",
+  intro: "Tell us about your project and our team will get back to you by email or phone.",
+  types: [
+    { id: "quote", label: "Request a quote" },
+    { id: "general", label: "General enquiry" },
+  ],
+  services: [
+    { id: "civil", label: "Civil Solutions" },
+    { id: "mechanical", label: "Mechanical Solutions" },
+    { id: "electrical", label: "Electrical Solutions" },
+    { id: "mining", label: "Mining (PPM)" },
+    { id: "equipment", label: "Equipment and manpower supply" },
+    { id: "other", label: "Other" },
+  ],
+  timelines: ["Within 1 month", "1 to 3 months", "3 to 6 months", "More than 6 months", "Not decided yet"],
+  privacy: "We only use these details to reply to your request.",
 };

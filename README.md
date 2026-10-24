@@ -17,15 +17,15 @@ Every page is pre-rendered as static HTML, so it can be hosted anywhere that run
 
 | URL | Page | What changed |
 | --- | --- | --- |
-| `/` | Home | Full-photo hero, Who We Are, Core Disciplines, PPM, Our Story videos, animated Track Record, Core Services, client logo wall, call to action |
+| `/` | Home | Full-screen film hero with a frosted-glass strip of client names, Who We Are, interactive locations map, client logo wall, Core Services (photo on hover), Track Record, Core Disciplines, PPM, Our Story videos, call to action |
 | `/company/` | Company | Sticky section menu (History, Philosophy, Quality & Safety, Our People), side panel with divisions and contact |
-| `/projects/` | Projects | Division tabs with project counts, searchable tables, filter by client |
+| `/projects/` | Projects | Project numbers (also division filters); one table of all projects with filters for division, scope, client and location, search, sort, removable filter chips, and shareable filtered links |
 | `/list-of-equipment/` | Equipment and vehicles | Grand total, search, sort, availability bars |
 | `/list-of-staff-and-manpower/` | List of Staff and Manpower | Same as equipment |
 | `/training-and-safety/` | Quality & Safety | Quality mission panel, 2025 safety highlights, statistics table, certificate viewer |
-| `/services/` | Services | Overview of the 3 divisions, a section for each, PPM |
+| `/services/` | Services | Overview of the 3 divisions with Request a Quote, a section for each with its own quote and projects links, PPM, closing call to action |
 | `/media/` | Media Center | 191 photos, filter by site, full-screen viewer (keyboard and swipe) |
-| `/contact/` | Contact | Email and call buttons, Dammam and Riyadh offices, map, site offices |
+| `/contact/` | Contact | Email and call buttons, Dammam and Riyadh offices, enquiry / request-for-quote form, map with offices and site offices (pick one to move the map) |
 
 ## Where things live
 
@@ -40,11 +40,87 @@ Every page is pre-rendered as static HTML, so it can be hosted anywhere that run
 
 ## Design system
 
-- **Colours**: the logo's indigo `#2D2481` for buttons, links and key numbers; the logo's green `#2FB61D` only for small accents; deep indigo `#141233` for the PPM band and the footer; white and `#F4F5F8` alternating section backgrounds.
+- **Colours**: neutral only, with no blue or purple cast. Near-black `#111111` for text, buttons and key numbers; `#0B0B0B` for the dark bands and the footer; white and `#F5F5F5` alternating section backgrounds; `#E5E5E5` lines and `#5E5E5E` secondary text. The logo keeps its own colours, and its green `#2FB61D` is the one accent, used for small details only.
+- **Logo**: the two logo files have different empty space around the mark, so `Logo.tsx` crops each to the mark itself. It is 56px tall in the desktop header (44px on phones) and 80px in the footer, and it no longer changes size when the header turns white.
 - **Type**: IBM Plex Sans, with IBM Plex Sans Arabic for Arabic text such as the addresses.
 - **Headings**: the live site sets many headings in capitals ("WHO WE ARE", "CIVIL SOLUTIONS"). The words are kept exactly; they are displayed in title case (`src/lib/text.ts`) for readability.
-- **Motion** (Framer Motion): hero entrance, a soft cross-fade between pages, counters that count up once, the Company dropdown, tab and filter indicators, the video player and the photo viewer. Reduced-motion settings are respected.
+- **Motion and interaction** (Framer Motion). Kept deliberately quiet:
+  - Native scrolling (no smooth-scroll library, so the page responds immediately); a thin green scroll-progress line; a header that hides on scroll down and returns on scroll up.
+  - A small ring follows the mouse (14px, 28px over links); it blends with the page, so it shows black over white and white over black. Off on touch devices.
+  - New pages fade in. Headings and content fade up once as they enter the view; images open with a short wipe; a few photos move with a light parallax; the two key statements brighten word by word as you scroll.
+  - Home: the company film plays (muted, decorative) behind the headline under a 35% black tint, with black scrims behind the text and the header so white text stays at 4.5:1 or better on the brightest frames. It only plays while the hero is on screen, and never autoplays for reduced-motion visitors. A frosted-glass strip along its bottom (20px backdrop blur, a light white sheen and a hairline highlight; the black scrim stops exactly at the strip's top edge and drops to 40% beneath it, so the film shows through while the names stay at 5:1 or better) scrolls the names of PPCO's clients, taken from the project lists (`pastClients()` in `src/lib/csv.ts`) and ordered by number of projects; it pauses on hover. Then the locations map (below). Then the client-logo bands, in full colour: each logo file has its own empty margin, so every logo is cropped to its measured outline (`box` in `site.ts`) and fitted inside its tile; none is clipped. Then the service rows: on desktop a pinned photo beside the list crossfades to the service you hover or focus; on phones each row has its own thumbnail. Further down: expanding discipline panels and the track record with counting figures.
+  - Services: the photo column stays pinned and changes as each division scrolls past.
+  - Contact: copy-email button, the enquiry / RFQ form, and one map section listing the Dammam and Riyadh offices and the site offices. Locations with an exact position (`mapPoints` in `site.ts`, taken from PPCO's Google Maps listings: Dammam, Riyadh and NEOM) move the map there and offer Open in Google Maps; the other site offices are listed without a link until their positions are added.
+  - Page changes: every new page opens at the very top, links to a section open at that section below the header, and Back/Forward return to where you were (`ScrollManager.tsx`). The page has no `scroll-padding-top`: Next.js reads it after each navigation and would otherwise scroll past the banner.
+  - Mobile menu: a labelled Menu button that stays visible over photos and on white, a full-screen panel with large links, Company sub-pages that expand in place, Request a Quote and Company Profile, and email and phone. It locks the page behind it, closes with Escape, and returns focus to the button.
+  - Removed as too playful for a corporate site: magnetic buttons, tilting video cards, wobbling certificates, the pointer spotlight on cards, the photo that trailed the pointer over service rows, the round "Contact Us" button, cursor text labels, the coloured page-transition panel, the moving band of office names and the outlined "PPM" and "2006" watermarks.
+  - The client-logo bands have a visible pause control; every moving band pauses on hover or keyboard focus.
+  - Reveals animate full `transform` strings and the page fade runs as CSS keyframes, so they stay smooth while the next page loads; none leaves a transform behind, so sticky and fixed elements keep working.
+  - All motion respects the visitor's reduced-motion setting; the cursor ring switches off for it.
+- **Footer**: black, like the dark bands. The “Always One Step Ahead” sign-off is sized with container units (`10cqi`) so it always fills the footer's width on a single line.
 - **Accessibility**: skip link, keyboard-operable menus, tabs, filters and viewers, visible focus, captions on tables, sticky first column on wide tables.
+
+## Locations map (home)
+
+An interactive version of PPCO's locations map. The coastline was traced from PPCO's own map image, and the points, categories and labels follow it (`src/content/locations.ts`).
+
+- Pick a location by its label or dot, from the Location list, or with Previous / Next. The panel shows its role (head quarter, regional office, site office & yard or project location), office address and hours where known, and the projects listed there with their clients.
+- Projects are matched by place name or by the Aramco field codes used in project names (HRDH = Haradh, KHRS = Khurais). Each location links to the Projects page, opened on the right division and filtered to that location (`/projects/?division=electrical&location=haradh`); the filter shows as a removable chip.
+- The legend doubles as a filter. A dashed line traces the route from the head office in Dammam to the selected location.
+- Motion: the map fades in, leader lines draw and points appear once when the section scrolls into view; selecting a point plays one short ring. Everything is static for reduced-motion visitors.
+- Locations with no rows in the project lists (for example Jeddah, Tabuk, Hofuf) say so and link to all projects. Add their projects to the CSV files, or add keywords in `locations.ts`, and they will appear.
+
+## Projects filtering
+
+`/projects/` lists all 58 projects from the three CSV files in one table.
+
+- Filters: division (also the three project-number cards), scope of work, client (both multi-select), location (the map locations) and free-text search across project, scope and client, with matches highlighted. Sort by project number, name, client or division.
+- Counts beside every option update with the other filters, and options with no matches are hidden, so no choice leads to an empty table. Active filters show as removable chips with Clear all. Selecting a scope or client in the table filters by it.
+- Filters are kept in the address (`/projects/?division=electrical&client=Saudi+Aramco&location=haradh&q=OHPL&sort=name`), so a filtered view can be shared or bookmarked, and the map's links use the same parameters.
+- On phones the filters sit behind a Filters button showing how many are active, with a "Show N projects" button that closes the panel and jumps to the results.
+
+## Enquiry and request-for-quote form
+
+On the Contact page (`#enquiry`). Every "Request a Quote" link opens it with the quote option and, from a division, that service already chosen (`/contact/?type=quote&service=civil#enquiry`).
+
+- Fields: name, company, email, phone, and for quotes the service, project location, expected start and scope of work. Validation runs on submit, errors are shown under each field, and focus moves to the first one.
+- Delivery: the form posts to `/api/enquiry`, which emails the request through [Resend](https://resend.com) when these environment variables are set on the server:
+
+  ```bash
+  RESEND_API_KEY=re_...
+  ENQUIRY_TO=info@ppco-ksa.com
+  ENQUIRY_FROM="PPCO Website <website@ppco-ksa.com>"   # a sender on a domain verified in Resend
+  ```
+
+  Until they are set, the form tells the visitor that online sending isn't available and offers the same message, already filled in, to send from their own email app. Nothing typed is lost.
+- Spam: a hidden honeypot field; submissions that fill it are dropped.
+- The site therefore needs a Node host (for example Vercel) for this one route; every page is still pre-rendered.
+
+## Hero film
+
+The files are in `public/video/`: `ppco-hero.mp4` (1280×720, desktop), `ppco-hero-mobile.mp4` (854×480, phones) and `ppco-hero-poster.jpg` (shown while the film loads). The film plays muted, as a background. To replace it, re-encode the new file the same way:
+
+```bash
+ffmpeg -i source.mp4 -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p -an -movflags +faststart public/video/ppco-hero.mp4
+ffmpeg -i source.mp4 -vf scale=854:-2 -c:v libx264 -preset slow -crf 30 -pix_fmt yuv420p -an -movflags +faststart public/video/ppco-hero-mobile.mp4
+```
+
+## Skills applied in this version
+
+Each skill was used only where its subject matched the work:
+
+| Skill | Used for |
+| --- | --- |
+| landing-page-design (elayadesign) | Hero text block capped at 680px, sizes snapped to the Tailwind scale (36 / 48 / 60px), one primary action with the second as a text link, custom ease-out curves |
+| tastemaker, hero guidelines (codeswithroh) | Attention budget and subtraction pass for the hero: a 4-word headline on 1–2 lines, the scroll arrow removed, controls moved into the ticker bar |
+| better-typography (Jakub Krehel) | Balanced heading wraps and `pretty` paragraph wraps site-wide, unitless line heights in the hero |
+| better-colors (Jakub Krehel) | The hero tint and scrim were measured against 64 frames of the film rather than estimated |
+| better-accessibility (Jakub Krehel) | Pause control for the client-logo bands, no autoplay under reduced motion, a form that validates on submit with linked error messages and focus on the first problem, a mobile menu that traps focus and returns it, keyboard-reachable scrolling tables; checked with an axe-core audit of every page |
+| emil-design-eng, animation-performance (Emil Kowalski) | Press feedback on the controls, the blurred icon crossfade, explicit transition properties instead of `transition: all`, `transform` strings and CSS keyframes for motion that runs during page loads; the "should this animate at all" test used in the animation sweep |
+| feedback-patterns (designer-skills) | Control state shown by the icon, the label and the filled style, never by colour alone |
+| no-ai-design-slop (Meng To) | Removal test on the hero: each element kept only if it answers what this is, why it matters or what to do next |
+
+Not used, because nothing in this work called for them: garden-skills (its web-design-engineer skill covers the same ground as the skills above, and the rest is video presentations, article layouts and image generation), Meng To's WebGL, illustration and game skills, Emil's native and Swift skills, and the research and testing skills in designer-skills.
 
 ## Before launch
 

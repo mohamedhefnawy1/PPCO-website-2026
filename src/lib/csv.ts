@@ -37,3 +37,48 @@ export function readResourceList(file: string): { item: string; count: number }[
   const right = rows.filter((r) => r[2]).map((r) => ({ item: r[2], count: Number(r[3]) }));
   return [...left, ...right].filter((r) => r.item);
 }
+
+/**
+ * Clients PPCO has worked for, taken from the three project lists and ordered by number of projects.
+ * Generic labels from the lists ("City Residence RE", "Retail RE") are left out.
+ */
+export function pastClients(): string[] {
+  const counts = new Map<string, number>();
+  for (const f of ["civil-projects.csv", "mechanical-projects.csv", "electrical-projects.csv"]) {
+    for (const p of readProjects(f)) {
+      if (!p.client || / RE$/.test(p.client)) continue;
+      counts.set(p.client, (counts.get(p.client) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([c]) => c);
+}
+
+export type LocationStats = {
+  total: number;
+  divisions: { id: string; label: string; count: number }[];
+  clients: string[];
+  sample: string[];
+};
+
+/** Projects from the three lists grouped by map location (see src/content/locations.ts). */
+export function locationProjects(
+  divisions: { id: string; label: string; csv: string }[],
+  locs: { id: string; keywords: string[] }[],
+  match: (name: string, loc: { keywords: string[] }) => boolean,
+): Record<string, LocationStats> {
+  const lists = divisions.map((d) => ({ ...d, projects: readProjects(d.csv) }));
+  const out: Record<string, LocationStats> = {};
+  for (const loc of locs) {
+    const divs = lists
+      .map((d) => ({ id: d.id, label: d.label, hits: d.projects.filter((p) => match(p.name, loc)) }))
+      .filter((d) => d.hits.length);
+    const all = divs.flatMap((d) => d.hits);
+    out[loc.id] = {
+      total: all.length,
+      divisions: divs.map((d) => ({ id: d.id, label: d.label, count: d.hits.length })),
+      clients: [...new Set(all.map((p) => p.client))],
+      sample: all.slice(0, 3).map((p) => p.name),
+    };
+  }
+  return out;
+}

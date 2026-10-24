@@ -4,7 +4,7 @@ import ResourceList from "@/components/ResourceList";
 import { manpowerPage as m, up } from "@/content/site";
 import { readCsv, readResourceList } from "@/lib/csv";
 
-export const metadata: Metadata = { title: "List of Staff and Manpower" };
+export const metadata: Metadata = { title: "List of Staff and Manpower", description: "PPCO’s staff and manpower, with numbers by role." };
 
 export default function ManpowerPage() {
   const [header] = readCsv(m.csv);

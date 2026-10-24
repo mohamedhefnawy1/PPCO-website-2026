@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Check, Clock, Mail, MapPin } from "lucide-react";
 import PageHero from "@/components/PageHero";
+import CtaBand from "@/components/CtaBand";
 import SubNav from "@/components/SubNav";
 import SafetyTable from "@/components/SafetyTable";
+import { Reveal, RevealText, ScrollText } from "@/components/motion/primitives";
 import { companyPage as c } from "@/content/site";
 import { tc } from "@/lib/text";
 
@@ -18,115 +20,151 @@ const sections = [
 
 export default function CompanyPage() {
   const { philosophy: ph, qualitySafety: qs } = c;
+  const [historyLead, ...historyRest] = c.history.paragraphs;
+  const [peopleLead, ...peopleRest] = c.people.paragraphs;
+
   return (
     <>
       <PageHero title={c.title} image={c.heroImage} />
       <SubNav items={sections} />
 
-      <div className="wrap grid gap-16 py-16 md:py-24 lg:grid-cols-12 lg:gap-8">
-        <div className="min-w-0 space-y-24 md:space-y-32 lg:col-span-8">
-          {/* History */}
-          <section id="history" className="scroll-mt-40">
-            <h2 className="heading h2">{tc(c.history.title)}</h2>
-            <div className="prose-body lead mt-8 max-w-[68ch] text-muted">
-              {c.history.paragraphs.map((p) => (
-                <p key={p}>{p}</p>
+      {/* History */}
+      <section id="history" className="section relative scroll-mt-36">
+        <div className="wrap relative grid gap-10 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-3">
+            <Reveal>
+              <p className="eyebrow">{tc(c.history.title)}</p>
+            </Reveal>
+          </div>
+          <div className="lg:col-span-8">
+            <ScrollText text={historyLead} className="heading text-[clamp(1.5rem,2.6vw,2.4rem)] leading-[1.25] tracking-[-0.015em]" />
+            <div className="mt-12 grid gap-8 md:grid-cols-2">
+              {historyRest.map((p, i) => (
+                <Reveal key={p} delay={i * 0.1}>
+                  <p className="text-muted">{p}</p>
+                </Reveal>
               ))}
             </div>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* Philosophy */}
-          <section id="philosophy" className="scroll-mt-40">
-            <h2 className="heading h2">{tc(ph.title)}</h2>
-            <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-8">
-              {[ph.mission, ph.vision].map((b) => (
-                <div key={b.title}>
-                  <h3 className="heading h3 border-t-2 border-indigo pt-5">{tc(b.title)}</h3>
-                  <div className="prose-body mt-4 text-muted">
-                    {b.paragraphs.map((p) => (
-                      <p key={p}>{p}</p>
-                    ))}
-                  </div>
+      {/* Philosophy */}
+      <section id="philosophy" className="section scroll-mt-36 bg-mist">
+        <div className="wrap">
+          <RevealText text={tc(ph.title)} className="heading h2" />
+          <div className="mt-14 grid gap-12 md:grid-cols-2 md:gap-16">
+            {[ph.mission, ph.vision].map((b, i) => (
+              <Reveal key={b.title} delay={i * 0.12} className={i === 1 ? "md:mt-24" : ""}>
+                <h3 className="heading text-[clamp(2rem,3vw,2.75rem)] text-ink">{tc(b.title)}</h3>
+                <div className="prose-body mt-5 text-muted">
+                  {b.paragraphs.map((p) => (
+                    <p key={p}>{p}</p>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </Reveal>
+            ))}
+          </div>
 
-            <h3 className="heading h3 mt-16">{tc(ph.values.title)}</h3>
-            <p className="mt-3 max-w-[60ch] text-muted">{ph.values.intro}</p>
-            <ul className="mt-8 grid gap-px border border-line bg-line sm:grid-cols-2 xl:grid-cols-3">
-              {ph.values.items.map((v) => (
-                <li key={v.name} className="bg-white p-6">
-                  <p className="font-medium text-indigo">{v.name}</p>
-                  <p className="mt-2 text-muted">{v.text}</p>
-                </li>
+          <div className="mt-24 grid gap-8 lg:grid-cols-12">
+            <div className="lg:col-span-4">
+              <RevealText as="h3" text={tc(ph.values.title)} className="heading text-[clamp(2rem,3vw,2.75rem)]" />
+              <Reveal delay={0.1}>
+                <p className="mt-4 text-muted">{ph.values.intro}</p>
+              </Reveal>
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-2 lg:col-span-8">
+              {ph.values.items.map((v, i) => (
+                <Reveal as="li" key={v.name} delay={(i % 2) * 0.08 + Math.floor(i / 2) * 0.06}>
+                  <div className="h-full border border-line bg-white p-6 transition-colors duration-300 hover:border-ink/40 md:p-7">
+                    <p className="text-lg font-medium text-ink">{v.name}</p>
+                    <p className="mt-2 text-muted">{v.text}</p>
+                  </div>
+                </Reveal>
               ))}
             </ul>
-          </section>
+          </div>
+        </div>
+      </section>
 
-          {/* Quality & safety */}
-          <section id="quality-safety" className="scroll-mt-40">
-            <h2 className="heading h2">{tc(qs.title)}</h2>
-            <p className="lead mt-8 max-w-[68ch] text-muted">{qs.intro}</p>
-            <div className="mt-10 grid gap-10 md:grid-cols-2 md:gap-8">
-              {[qs.quality, qs.safety].map((b) => (
-                <div key={b.title}>
-                  <h3 className="heading h3">{b.title}</h3>
-                  <p className="mt-3 text-muted">{b.intro}</p>
-                  <ul className="mt-5 divide-y divide-line border-y border-line">
-                    {b.items.map((it) => (
-                      <li key={it} className="flex gap-3 py-3">
-                        <Check className="mt-1 size-4 shrink-0 text-green" aria-hidden />
-                        <span>{it}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+      {/* Quality & safety */}
+      <section id="quality-safety" className="section scroll-mt-36">
+        <div className="wrap">
+          <div className="grid gap-8 lg:grid-cols-12">
+            <RevealText text={tc(qs.title)} className="heading h2 lg:col-span-5" />
+            <Reveal delay={0.1} className="lg:col-span-6 lg:col-start-7">
+              <p className="lead text-muted">{qs.intro}</p>
+            </Reveal>
+          </div>
+          <div className="mt-14 grid gap-12 md:grid-cols-2 md:gap-16">
+            {[qs.quality, qs.safety].map((b, k) => (
+              <Reveal key={b.title} delay={k * 0.1}>
+                <h3 className="heading h3">{b.title}</h3>
+                <p className="mt-3 text-muted">{b.intro}</p>
+                <ul className="mt-6 space-y-3">
+                  {b.items.map((it) => (
+                    <li key={it} className="flex gap-4 border-t border-line pt-3">
+                      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-green/12 text-green-deep">
+                        <Check className="size-3.5" aria-hidden />
+                      </span>
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal>
+            <p className="mt-12 max-w-[68ch] text-muted">{qs.closing}</p>
+          </Reveal>
+          <Reveal className="mt-10">
+            <SafetyTable years={qs.table.years} rows={qs.table.rows} caption="Safety statistics by year" />
+          </Reveal>
+          <Link href="/training-and-safety" className="link mt-8">
+            Quality & Safety <ArrowRight className="size-4" aria-hidden />
+          </Link>
+        </div>
+      </section>
+
+      {/* People + contact */}
+      <section id="people" className="section scroll-mt-36 bg-night text-white">
+        <div className="wrap grid gap-14 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-7">
+            <Reveal>
+              <p className="eyebrow !text-white/80">{tc(c.people.title)}</p>
+            </Reveal>
+            <ScrollText text={peopleLead} className="heading mt-6 text-[clamp(1.5rem,2.6vw,2.4rem)] leading-[1.25] tracking-[-0.015em]" />
+            <div className="prose-body mt-10 text-white/70">
+              {peopleRest.map((p, i) => (
+                <Reveal key={p} delay={i * 0.06}>
+                  <p>{p}</p>
+                </Reveal>
               ))}
             </div>
-            <p className="mt-10 max-w-[68ch] text-muted">{qs.closing}</p>
-            <div className="mt-10">
-              <SafetyTable years={qs.table.years} rows={qs.table.rows} caption="Safety statistics by year" />
-            </div>
-            <Link href="/training-and-safety" className="link mt-8">
-              Quality & Safety <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </section>
-
-          {/* People */}
-          <section id="people" className="scroll-mt-40">
-            <h2 className="heading h2">{tc(c.people.title)}</h2>
-            <div className="prose-body lead mt-8 max-w-[68ch] text-muted">
-              {c.people.paragraphs.map((p) => (
-                <p key={p}>{p}</p>
-              ))}
-            </div>
-            <Link href="/list-of-staff-and-manpower" className="link mt-8">
+            <Link href="/list-of-staff-and-manpower" className="link mt-8 !text-white !decoration-white/40 hover:!decoration-white">
               List of Staff and Manpower <ArrowRight className="size-4" aria-hidden />
             </Link>
-          </section>
-        </div>
+          </div>
 
-        {/* Aside */}
-        <aside className="lg:col-span-4 lg:col-start-9">
-          <div className="space-y-6 lg:sticky lg:top-40">
-            <div className="bg-mist p-6 md:p-8">
+          <div className="space-y-4 lg:col-span-4 lg:col-start-9">
+            <Reveal className="bg-white/[0.06] p-6 md:p-8">
               <h2 className="text-lg font-medium">{c.specializing.title}</h2>
-              <ul className="mt-5 divide-y divide-line border-y border-line">
+              <ul className="mt-5 divide-y divide-white/10 border-y border-white/10">
                 {c.specializing.items.map((d, i) => (
                   <li key={d}>
                     <Link href={`/services#${["civil", "mechanical", "electrical"][i]}`} className="group flex items-center justify-between py-3.5">
-                      <span>{tc(d)}</span>
-                      <ArrowRight className="size-4 text-indigo transition-transform group-hover:translate-x-1" aria-hidden />
+                      <span className="transition-transform duration-300 group-hover:translate-x-1">{tc(d)}</span>
+                      <ArrowRight className="size-4 text-green transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
                     </Link>
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="border border-line p-6 md:p-8">
+            </Reveal>
+            <Reveal delay={0.1} className="bg-white p-6 text-ink md:p-8">
               <h2 className="text-lg font-medium">{tc(c.contact.title)}</h2>
               <ul className="mt-5 space-y-3 text-muted">
                 <li className="flex gap-3">
-                  <MapPin className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
+                  <MapPin className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
                   <span>
                     {c.contact.lines[0]}
                     <br />
@@ -134,23 +172,24 @@ export default function CompanyPage() {
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <Mail className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
-                  <a href={`mailto:${c.contact.lines[2]}`} className="hover:text-indigo">
+                  <Mail className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
+                  <a href={`mailto:${c.contact.lines[2]}`} className="hover:text-ink">
                     {c.contact.lines[2]}
                   </a>
                 </li>
                 <li className="flex gap-3">
-                  <Clock className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
+                  <Clock className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
                   <span>{c.contact.lines[3]}</span>
                 </li>
               </ul>
               <Link href="/contact" className="btn btn-primary mt-6 w-full justify-center">
                 Contact
               </Link>
-            </div>
+            </Reveal>
           </div>
-        </aside>
-      </div>
+        </div>
+      </section>
+      <CtaBand />
     </>
   );
 }

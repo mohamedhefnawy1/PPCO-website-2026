@@ -23,7 +23,7 @@ export default function SubNav({ items }: { items: { id: string; label: string }
   }, [items]);
 
   return (
-    <div className="sticky top-20 z-30 border-b border-line bg-white/95 backdrop-blur">
+    <div className="sticky top-[var(--header-offset)] z-30 border-b border-line bg-white/95 backdrop-blur transition-[top] duration-[450ms] ease-[cubic-bezier(0.22,1,0.36,1)]">
       <nav aria-label="On this page" className="wrap">
         <ul className="-mx-1 flex gap-1 overflow-x-auto">
           {items.map((i) => (
@@ -32,7 +32,7 @@ export default function SubNav({ items }: { items: { id: string; label: string }
                 href={`#${i.id}`}
                 aria-current={active === i.id ? "true" : undefined}
                 className={`relative block px-3 py-4 text-[0.95rem] font-medium transition-colors ${
-                  active === i.id ? "text-indigo" : "text-muted hover:text-ink"
+                  active === i.id ? "text-ink" : "text-muted hover:text-ink"
                 }`}
               >
                 {i.label}

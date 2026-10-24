@@ -4,7 +4,7 @@ import MediaGallery from "@/components/MediaGallery";
 import { mediaSites, mediaTitle } from "@/content/media";
 import { up } from "@/content/site";
 
-export const metadata: Metadata = { title: "Media Center" };
+export const metadata: Metadata = { title: "Media Center", description: "Photos from PPCO project sites across Saudi Arabia." };
 
 export default function MediaPage() {
   return (

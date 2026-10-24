@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Reveal } from "./motion/primitives";
 import { Play, X } from "lucide-react";
 import Photo from "./Photo";
 import { videos } from "@/content/site";
@@ -23,31 +24,18 @@ export default function StoryVideos() {
 
   return (
     <>
-      <ul className="grid gap-6 md:grid-cols-2">
+      <ul className="grid gap-6 md:grid-cols-2 md:gap-8">
         {videos.map((v, i) => (
-          <li key={v.id}>
-            <button
-              type="button"
-              onClick={() => setPlaying(v.id)}
-              className="group relative block w-full overflow-hidden text-left"
-              aria-label={`Play PPCO video ${i + 1}`}
-            >
-              <Photo src={v.poster} alt="" sizes="(min-width: 768px) 50vw, 100vw" className="aspect-video w-full transition-transform duration-700 group-hover:scale-[1.02]" />
-              <span aria-hidden className="absolute inset-0 bg-night/25 transition-colors group-hover:bg-night/40" />
-              <span className="absolute left-6 top-1/2 flex -translate-y-1/2 items-center gap-4 md:left-8">
-                <span className="grid size-16 place-items-center rounded-full bg-white text-indigo transition-transform duration-300 group-hover:scale-110 md:size-20">
-                  <Play className="ml-1 size-6 fill-current md:size-7" aria-hidden />
-                </span>
-              </span>
-            </button>
-          </li>
+          <Reveal as="li" key={v.id} delay={i * 0.12} className={i === 1 ? "md:mt-20" : ""}>
+            <VideoCard onPlay={() => setPlaying(v.id)} poster={v.poster} index={i} />
+          </Reveal>
         ))}
       </ul>
 
       <AnimatePresence>
         {playing && (
           <motion.div
-            className="fixed inset-0 z-[70] flex items-center justify-center bg-night/95 p-4 md:p-12"
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/95 p-4 md:p-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -84,5 +72,23 @@ export default function StoryVideos() {
         )}
       </AnimatePresence>
     </>
+  );
+}
+
+/** Video card: poster with a play button; the photo eases in slightly on hover. */
+function VideoCard({ onPlay, poster, index }: { onPlay: () => void; poster: string; index: number }) {
+  return (
+    <button type="button" onClick={onPlay} className="group relative block w-full overflow-hidden text-left" aria-label={`Play PPCO video ${index + 1}`}>
+      <Photo
+        src={poster}
+        alt=""
+        sizes="(min-width: 768px) 50vw, 100vw"
+        className="aspect-video w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
+      />
+      <span aria-hidden className="absolute inset-0 bg-black/25 transition-colors duration-300 group-hover:bg-black/15" />
+      <span className="absolute bottom-5 left-5 flex items-center gap-3 bg-white py-3 pl-4 pr-5 text-sm font-medium text-ink transition-colors duration-200 group-hover:bg-mist md:bottom-8 md:left-8">
+        <Play className="size-4 fill-current" aria-hidden /> Play video
+      </span>
+    </button>
   );
 }

@@ -8,6 +8,9 @@ import "./globals.css";
 import Providers from "@/components/Providers";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ScrollManager from "@/components/motion/ScrollManager";
+import ScrollProgress from "@/components/motion/ScrollProgress";
+import Cursor from "@/components/motion/Cursor";
 import { company } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -17,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: { siteName: company.name, type: "website", locale: "en_SA" },
 };
 
-export const viewport: Viewport = { themeColor: "#2d2481" };
+export const viewport: Viewport = { themeColor: "#111111" };
 
 const orgJsonLd = {
   "@context": "https://schema.org",
@@ -38,10 +41,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Providers>
           <a
             href="#main"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:bg-indigo focus:px-4 focus:py-2 focus:text-white"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[80] focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
           >
             Skip to content
           </a>
+          <ScrollManager />
+          <ScrollProgress />
+          <Cursor />
           <Header />
           <main id="main">{children}</main>
           <Footer />

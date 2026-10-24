@@ -4,7 +4,7 @@ import ResourceList from "@/components/ResourceList";
 import { equipmentPage as e, up } from "@/content/site";
 import { readCsv, readResourceList } from "@/lib/csv";
 
-export const metadata: Metadata = { title: "Equipment and vehicles" };
+export const metadata: Metadata = { title: "Equipment and vehicles", description: "PPCO’s fleet of equipment and vehicles, with quantities by type." };
 
 export default function EquipmentPage() {
   const [header] = readCsv(e.csv);

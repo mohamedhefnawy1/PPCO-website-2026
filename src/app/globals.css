@@ -1,27 +1,37 @@
 @import "tailwindcss";
 
 @theme {
-  /* PPCO brand, sampled from the logo */
-  --color-indigo: #2d2481;
-  --color-indigo-deep: #1d1760;
+  /* Neutral palette: black, white and true greys (no blue or purple cast).
+     The logo keeps its own colours; green is the one accent, used sparingly. */
+  --color-ink: #111111;
+  --color-ink-deep: #000000;
   --color-green: #2fb61d;
   --color-green-deep: #238c15;
 
-  /* Neutrals (slightly cool, tuned to the indigo) */
-  --color-ink: #16152b;
-  --color-night: #141233;
-  --color-mist: #f4f5f8;
-  --color-line: #e3e4ec;
-  --color-muted: #5d5c74;
-  --color-faint: #9a99ad;
+  --color-night: #0b0b0b;
+  --color-mist: #f5f5f5;
+  --color-line: #e5e5e5;
+  --color-muted: #5e5e5e;
+  --color-faint: #9b9b9b;
 
   --font-sans: "IBM Plex Sans", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
+  :root {
+    --header-h: 72px;
+    --header-offset: var(--header-h);
+  }
+  @media (min-width: 1024px) {
+    :root {
+      --header-h: 88px;
+    }
+  }
+  /* No scroll-padding on <html>: Next.js reads it after every navigation and, with a full-bleed banner
+     at the top of the page, would scroll the new page down past the banner. Section links clear the
+     fixed header through scroll-margin on the targets instead. Scrolling is the browser's own (no smooth-
+     scroll library, no CSS smooth scrolling), so it responds immediately and route changes jump to the top. */
   html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 96px;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
@@ -32,8 +42,15 @@
     font-size: 1rem;
     line-height: 1.65;
   }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+  [id] {
+    scroll-margin-top: calc(var(--header-h) + 16px);
+  }
   ::selection {
-    background: var(--color-indigo);
+    background: var(--color-ink);
     color: #fff;
   }
   :focus-visible {
@@ -66,6 +83,7 @@
     font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.1;
+    text-wrap: balance;
   }
   .h1 {
     font-size: clamp(2.5rem, 5.5vw, 5rem);
@@ -86,7 +104,7 @@
     gap: 0.625rem;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-indigo);
+    color: var(--color-ink);
   }
   .eyebrow::before {
     content: "";
@@ -109,11 +127,11 @@
     transition: background-color 0.2s, color 0.2s, border-color 0.2s;
   }
   .btn-primary {
-    background: var(--color-indigo);
+    background: var(--color-ink);
     color: #fff;
   }
   .btn-primary:hover {
-    background: var(--color-indigo-deep);
+    background: var(--color-ink-deep);
   }
   .btn-white {
     background: #fff;
@@ -142,17 +160,18 @@
     align-items: center;
     gap: 0.375rem;
     font-weight: 500;
-    color: var(--color-indigo);
+    color: var(--color-ink);
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 5px;
-    text-decoration-color: rgb(45 36 129 / 0.3);
+    text-decoration-color: rgb(17 17 17 / 0.3);
     transition: text-decoration-color 0.2s;
   }
   .link:hover {
-    text-decoration-color: var(--color-indigo);
+    text-decoration-color: var(--color-ink);
   }
-  .prose-body p + p {
+  .prose-body p + p,
+  .prose-body > * + * {
     margin-top: 1.1em;
   }
 }
@@ -168,3 +187,26 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Page transition (see app/template.tsx) */
+.page-enter {
+  animation: page-enter 0.45s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

@@ -9,7 +9,7 @@ export default function SafetyTable({
   caption: string;
 }) {
   return (
-    <div className="overflow-x-auto border border-line">
+    <div className="overflow-x-auto border border-line" tabIndex={0} role="region" aria-label={caption}>
       <table className="tabular w-full min-w-[680px] border-collapse text-left">
         <caption className="sr-only">{caption}</caption>
         <thead>

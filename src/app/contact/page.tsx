@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import PageHero from "@/components/PageHero";
+import CopyEmail from "@/components/CopyEmail";
+import EnquiryForm from "@/components/EnquiryForm";
+import OfficeMap from "@/components/OfficeMap";
+import { Reveal, RevealText } from "@/components/motion/primitives";
 import { company, companyPage, contactPage as c } from "@/content/site";
-import { tc } from "@/lib/text";
 
-export const metadata: Metadata = { title: "Contact" };
+export const metadata: Metadata = { title: "Contact", description: "Contact PPCO in Dammam or Riyadh, or send a request for quote for civil, mechanical, electrical or mining works." };
 
 export default function ContactPage() {
   const [dammam, riyadh] = c.offices;
@@ -14,80 +17,65 @@ export default function ContactPage() {
 
       <section className="section">
         <div className="wrap grid gap-12 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-5">
-            <h2 className="heading h2">{c.heading}</h2>
+          <div className="lg:col-span-4">
+            <RevealText text={c.heading} className="heading text-[clamp(2.5rem,5vw,4.5rem)] leading-none tracking-[-0.03em]" />
 
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a href={`mailto:${company.email}`} className="btn btn-primary">
-                <Mail className="size-4" aria-hidden /> {company.email}
-              </a>
+            <Reveal delay={0.1} className="mt-10 flex flex-wrap gap-3">
+              <CopyEmail email={company.email} />
               <a href={company.phoneHref} className="btn btn-outline">
                 <Phone className="size-4" aria-hidden />
                 <span className="tabular" dir="ltr">
                   {company.phone}
                 </span>
               </a>
-            </div>
+            </Reveal>
 
-            <ul className="mt-12 divide-y divide-line border-y border-line">
-              <li className="py-6">
-                <h3 className="text-lg font-medium">{dammam.city}</h3>
-                <p className="mt-3 flex gap-3 text-muted">
-                  <MapPin className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
+            <div className="mt-14 space-y-3">
+              <Reveal className="border border-line p-6 md:p-8">
+                <h3 className="heading text-2xl">{dammam.city}</h3>
+                <p className="mt-4 flex gap-3 text-muted">
+                  <MapPin className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
                   {dammam.lines[0]}
                 </p>
                 <p className="mt-2 flex gap-3 text-muted">
-                  <Mail className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
-                  <a href={`mailto:${dammam.email}`} className="hover:text-indigo">
+                  <Mail className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
+                  <a href={`mailto:${dammam.email}`} className="hover:text-ink">
                     {dammam.email}
                   </a>
                 </p>
                 <p className="mt-2 flex gap-3 text-muted">
-                  <Phone className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
-                  <a href={company.phoneHref} className="hover:text-indigo">
+                  <Phone className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
+                  <a href={company.phoneHref} className="hover:text-ink">
                     {dammam.tel}
                   </a>
                 </p>
                 <p className="mt-2 flex gap-3 text-muted">
-                  <Clock className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
+                  <Clock className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
                   {companyPage.contact.lines[3]}
                 </p>
-              </li>
-              <li className="py-6">
-                <h3 className="text-lg font-medium">{riyadh.city}</h3>
-                <p className="mt-3 flex gap-3 text-muted">
-                  <MapPin className="mt-1 size-4 shrink-0 text-indigo" aria-hidden />
+              </Reveal>
+              <Reveal delay={0.1} className="border border-line p-6 md:p-8">
+                <h3 className="heading text-2xl">{riyadh.city}</h3>
+                <p className="mt-4 flex gap-3 text-muted">
+                  <MapPin className="mt-1 size-4 shrink-0 text-ink" aria-hidden />
                   {riyadh.lines[0]}
                 </p>
-              </li>
-            </ul>
+              </Reveal>
+            </div>
           </div>
 
-          <div className="lg:col-span-6 lg:col-start-7">
-            <div className="aspect-[4/3] w-full border border-line bg-mist lg:aspect-auto lg:h-full lg:min-h-[480px]">
-              <iframe
-                src={c.mapEmbed}
-                title="Map showing Projects Pioneers Co. locations"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="h-full w-full"
-              />
-            </div>
+          <div id="enquiry" className="scroll-mt-[calc(var(--header-h)+24px)] lg:col-span-7 lg:col-start-6">
+            <EnquiryForm />
           </div>
         </div>
       </section>
 
-      <section className="section bg-mist">
+      {/* Map with offices and site offices: pick a location to move the map there */}
+      <section id="map" className="section border-t border-line">
         <div className="wrap">
-          <h2 className="heading h3">{c.siteOfficesLabel.replace(":", "")}</h2>
-          <ul className="mt-8 grid grid-cols-2 border-l border-t border-line bg-white sm:grid-cols-3 lg:grid-cols-5">
-            {c.siteOffices.map((o) => (
-              <li key={o} className="flex items-center gap-3 border-b border-r border-line px-5 py-4">
-                <span className="size-1.5 shrink-0 rounded-full bg-green" aria-hidden />
-                {o === "NEOM" ? o : tc(o)}
-              </li>
-            ))}
-          </ul>
+          <Reveal>
+            <OfficeMap />
+          </Reveal>
         </div>
       </section>
     </>

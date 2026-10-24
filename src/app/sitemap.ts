@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+export const dynamic = "force-static";
+
 const pages = ["", "company", "projects", "list-of-equipment", "list-of-staff-and-manpower", "training-and-safety", "services", "media", "contact"];
 
 export default function sitemap(): MetadataRoute.Sitemap {

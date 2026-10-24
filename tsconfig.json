@@ -36,6 +36,10 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "functions",
+    "node_modules",
+    "out",
+    "server",
+    "worker"
   ]
 }

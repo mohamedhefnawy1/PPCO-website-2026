@@ -7,11 +7,12 @@ The copy is unchanged from the live site. Only the design, structure and usabili
 
 ```bash
 npm install
-npm run dev                  # http://localhost:3000
-npm run build && npm start   # production
+npm run dev       # http://localhost:3000
+npm run build     # static site in out/
+npm run preview   # builds, then serves it as the Cloudflare Worker (incl. the form), http://localhost:8787
 ```
 
-Every page is pre-rendered as static HTML, so it can be hosted anywhere that runs Next.js (Vercel, a Node server) or exported.
+The site is a static export (`output: "export"`): `next build` writes plain HTML, CSS and JS to `out/`, hosted on Cloudflare (see **Publishing**). The only server code is the enquiry form handler (`server/enquiry.ts`). In `npm run dev` it doesn't run, so the form falls back to "send from your email app".
 
 ## Pages (same URLs as the live site)
 
@@ -84,7 +85,7 @@ An interactive version of PPCO's locations map. The coastline was traced from PP
 On the Contact page (`#enquiry`). Every "Request a Quote" link opens it with the quote option and, from a division, that service already chosen (`/contact/?type=quote&service=civil#enquiry`).
 
 - Fields: name, company, email, phone, and for quotes the service, project location, expected start and scope of work. Validation runs on submit, errors are shown under each field, and focus moves to the first one.
-- Delivery: the form posts to `/api/enquiry`, which emails the request through [Resend](https://resend.com) when these environment variables are set on the server:
+- Delivery: the form posts to `/api/enquiry`, handled on Cloudflare (`server/enquiry.ts`, via `worker/index.ts`), which emails the request through [Resend](https://resend.com) when these variables are set in Cloudflare (Settings → Variables and Secrets; add the key as a secret, then redeploy):
 
   ```bash
   RESEND_API_KEY=re_...
@@ -94,7 +95,7 @@ On the Contact page (`#enquiry`). Every "Request a Quote" link opens it with the
 
   Until they are set, the form tells the visitor that online sending isn't available and offers the same message, already filled in, to send from their own email app. Nothing typed is lost.
 - Spam: a hidden honeypot field; submissions that fill it are dropped.
-- The site therefore needs a Node host (for example Vercel) for this one route; every page is still pre-rendered.
+- If Resend rejects the message or can't be reached, the form says so and offers the email-app fallback.
 
 ## Hero film
 
@@ -122,9 +123,27 @@ Each skill was used only where its subject matched the work:
 
 Not used, because nothing in this work called for them: garden-skills (its web-design-engineer skill covers the same ground as the skills above, and the rest is video presentations, article layouts and image generation), Meng To's WebGL, illustration and game skills, Emil's native and Swift skills, and the research and testing skills in designer-skills.
 
+## Publishing (Cloudflare)
+
+The site deploys as a **Cloudflare Worker with static assets** (`wrangler.jsonc`). `npx wrangler deploy` runs `npm run build` (static export to `out/`), uploads `out/` and the small Worker in `worker/index.ts`, which only handles the enquiry form (`/api/enquiry`). Pages are served by Cloudflare's asset handling, with `public/_headers` and the 404 page. Because `wrangler.jsonc` exists, Cloudflare no longer tries to convert the project to OpenNext.
+
+In Cloudflare (Workers & Pages → your Worker → Settings → Builds), with the GitHub repository connected:
+
+| Setting | Value |
+| --- | --- |
+| Build command | leave empty (the deploy step builds) |
+| Deploy command | `npx wrangler deploy` |
+| Root directory | `/` |
+
+Every push to `main` deploys. Form email settings go under Settings → Variables and Secrets (`RESEND_API_KEY` as a Secret, `ENQUIRY_TO`, `ENQUIRY_FROM`); `keep_vars` stops deploys from removing them. The Worker's name must match `name` in `wrangler.jsonc` (`ppco-website-2026`).
+
+The same repository also works as a Cloudflare **Pages** project (build command `npm run build`, output directory `out`); there the form is handled by `functions/api/enquiry.ts`. Both use the shared handler in `server/enquiry.ts`.
+
+Local check of the production build: `npm run preview` (builds, then serves it with the Worker at http://localhost:8787).
+
 ## Before launch
 
-1. **Images** are loaded from the live WordPress uploads folder (`ppco-ksa.com/wp-content/uploads`). Copy them to `/public` or a CDN before switching DNS away from WordPress, then update `up()` in `src/content/site.ts`.
+1. **Images** are loaded from the live WordPress uploads folder (`ppco-ksa.com/wp-content/uploads`), and served at their original size (a static export has no image optimiser). Before pointing `ppco-ksa.com` at Cloudflare Pages, move them: either keep WordPress running on a subdomain (for example `old.ppco-ksa.com`) and change `U` in `src/content/site.ts`, or copy the files into `public/` and point `up()` there. Otherwise every photo breaks when the domain moves.
 2. **Company Profile PDF** also points to the WordPress uploads folder. Move it with the images.
 3. **Footer links**: on the live site the footer links go nowhere (`#`). Here they go to the nearest page. "Leadership" goes to Our People on the Company page, because the site has no leadership content yet.
 

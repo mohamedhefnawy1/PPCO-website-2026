@@ -1,0 +1,20 @@
+// Cloudflare Workers deployment for the PPCO website.
+// `npx wrangler deploy` runs `npm run build` (static export to out/), then uploads out/ as static assets
+// together with the small Worker in worker/index.ts, which only handles the enquiry form (/api/*).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ppco-website-2026",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "build": { "command": "npm run build" },
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*"]
+  },
+  // Keep variables set in the Cloudflare dashboard (ENQUIRY_TO, ENQUIRY_FROM) when deploying.
+  "keep_vars": true,
+  "observability": { "enabled": true }
+}

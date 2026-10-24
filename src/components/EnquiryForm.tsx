@@ -40,7 +40,7 @@ function validate(f: Fields, type: Type): Errors {
  * - Validates on submit (not while typing), marks fields with aria-invalid, links each error to its
  *   field and moves focus to the first problem.
  * - Prefills from the URL: /contact/?type=quote&service=civil#enquiry
- * - Posts to /api/enquiry. If online sending isn't configured, it offers the same message as a
+ * - Posts to /api/enquiry (a Cloudflare Pages Function). If online sending isn't configured, it offers the same message as a
  *   ready-to-send email instead, so nothing typed is lost.
  */
 export default function EnquiryForm() {
@@ -97,12 +97,14 @@ export default function EnquiryForm() {
     }
     setStatus("sending");
     try {
-      const res = await fetch("/api/enquiry/", {
+      const res = await fetch("/api/enquiry", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type, ...f }),
       });
-      setStatus(res.ok ? "sent" : res.status === 503 ? "offline" : "failed");
+      // 503: sending not configured. 404/405: no form handler on this host (for example `next dev`,
+      // which doesn't run the Cloudflare Pages Function). Either way, offer the visitor's email app.
+      setStatus(res.ok ? "sent" : [404, 405, 503].includes(res.status) ? "offline" : "failed");
     } catch {
       setStatus("failed");
     }

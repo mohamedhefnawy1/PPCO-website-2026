@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "preview": "npx wrangler@4 dev",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

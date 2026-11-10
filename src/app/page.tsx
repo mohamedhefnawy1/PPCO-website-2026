@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Compass, Drill, Pickaxe, ShieldCheck, Siren, Wrench } from "lucide-react";
 import Photo from "@/components/Photo";
 import Counter from "@/components/Counter";
 import StoryVideos from "@/components/StoryVideos";
@@ -11,9 +11,19 @@ import { locations, projectInLocation } from "@/content/locations";
 import Disciplines from "@/components/home/Disciplines";
 import ServicesList from "@/components/home/ServicesList";
 import PausableBands from "@/components/motion/PausableBands";
-import { ImageReveal, Parallax, Reveal, RevealText, ScrollText } from "@/components/motion/primitives";
+import { Reveal, RevealText, ScrollText } from "@/components/motion/primitives";
 import { company, home, ppm, projectsPage } from "@/content/site";
 import { tc } from "@/lib/text";
+
+// PPM's capabilities, as listed in its introduction (ppm.body), one per glass tile.
+const ppmCapabilities = [
+  { label: "Exploration", icon: Compass },
+  { label: "Drilling", icon: Drill },
+  { label: "Mining Operations", icon: Pickaxe },
+  { label: "Plant Maintenance", icon: Wrench },
+  { label: "Emergency Response", icon: Siren },
+  { label: "Digital Security", icon: ShieldCheck },
+];
 
 export default function Home() {
   const { whoWeAre, disciplines, story, trackRecord, services, clients } = home;
@@ -44,27 +54,27 @@ export default function Home() {
             </Reveal>
           </div>
         </div>
+
+        {/* Key figures, in one quiet row (the full track record is on the Company page) */}
+        <dl className="wrap mt-16 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-line pt-10 md:mt-24 md:grid-cols-3 md:pt-12 lg:grid-cols-5">
+          {trackRecord.stats.map((st, i) => (
+            <Reveal key={st.label} delay={i * 0.05} className="flex flex-col">
+              <dt className="order-2 mt-2 text-sm text-muted">{st.label}</dt>
+              <dd className="heading order-1 whitespace-nowrap text-[clamp(2.25rem,3.6vw,3.5rem)] leading-none tracking-[-0.03em]">
+                <Counter value={st.value} suffix={st.suffix} suffixClassName={st.suffix.length > 2 ? "ml-1.5 text-[0.36em] tracking-normal" : "text-green"} />
+              </dd>
+            </Reveal>
+          ))}
+        </dl>
       </section>
 
-      {/* Locations: interactive map of offices, yards and project sites */}
-      <section id="locations" className="section scroll-mt-20 border-t border-line pt-16 md:pt-20">
-        <div className="wrap">
-          <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-            <div className="lg:col-span-7">
-              <Reveal>
-                <p className="eyebrow">{home.map.eyebrow}</p>
-              </Reveal>
-              <RevealText text={home.map.title} className="heading h2 mt-4" />
-            </div>
-            <Reveal delay={0.1} className="lg:col-span-4 lg:col-start-9">
-              <p className="lead text-muted">{home.map.body}</p>
-            </Reveal>
-          </div>
-          <div className="mt-12 lg:mt-16">
-            <LocationsMap stats={locationProjects(projectsPage.divisions, locations, projectInLocation)} />
-          </div>
-        </div>
-      </section>
+      {/* Locations: the section is a map of the region, with the offices, yards and project sites on it */}
+      <LocationsMap
+        stats={locationProjects(projectsPage.divisions, locations, projectInLocation)}
+        eyebrow={home.map.eyebrow}
+        title={home.map.title}
+        body={home.map.body}
+      />
 
       {/* Clients: two drifting bands */}
       <section className="section overflow-hidden bg-mist">
@@ -87,7 +97,7 @@ export default function Home() {
             speed: 55,
             reverse: r === 1,
             content: row.map(({ src, box }) => (
-              <span key={src} className="mr-3 flex h-28 w-44 shrink-0 items-center justify-center bg-white px-5 py-4 md:h-32 md:w-52 md:px-6 md:py-5">
+              <span key={src} className="mr-3 flex h-28 w-44 shrink-0 items-center justify-center rounded-2xl bg-white px-5 py-4 md:h-32 md:w-52 md:px-6 md:py-5">
                 {/* Cropped to the logo's own outline and fitted inside the tile, so no logo is clipped or undersized.
                     An SVG <image> loads straight away, unlike a lazy <img> inside a moving band. */}
                 <svg viewBox={box.join(" ")} preserveAspectRatio="xMidYMid meet" className="h-full w-full" aria-hidden>
@@ -99,7 +109,7 @@ export default function Home() {
         />
       </section>
 
-      {/* Core services: rows with a photo of the service on hover */}
+      {/* Core services: names on the right, the photo and its glass caption on the left */}
       <section className="section">
         <div className="wrap">
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
@@ -116,37 +126,6 @@ export default function Home() {
           <Reveal delay={0.1} className="mt-14 lg:mt-20">
             <ServicesList />
           </Reveal>
-        </div>
-      </section>
-
-      {/* Track record: an open, staggered layout instead of a grid */}
-      <section className="section bg-mist">
-        <div className="wrap grid gap-14 lg:grid-cols-12 lg:gap-8">
-          <div className="lg:col-span-4">
-            <div className="lg:sticky lg:top-32">
-              <Reveal>
-                <p className="eyebrow">{tc(trackRecord.eyebrow)}</p>
-              </Reveal>
-              <RevealText text={trackRecord.title} className="heading h2 mt-4" />
-              <Reveal delay={0.15}>
-                <p className="mt-6 text-muted">{trackRecord.body}</p>
-              </Reveal>
-            </div>
-          </div>
-          <dl className="lg:col-span-7 lg:col-start-6">
-            {trackRecord.stats.map((s, i) => (
-              <Reveal
-                key={s.label}
-                delay={i * 0.05}
-                className={`flex flex-col gap-1 border-t border-line py-8 md:flex-row md:items-baseline md:justify-between md:gap-10 ${i % 2 ? "md:pl-[12%]" : ""}`}
-              >
-                <dt className="order-2 text-lg text-muted md:order-2 md:max-w-[16ch] md:text-right">{s.label}</dt>
-                <dd className="heading order-1 text-[clamp(3.5rem,8vw,7.5rem)] leading-none tracking-[-0.04em] text-ink">
-                  <Counter value={s.value} suffix={s.suffix} suffixClassName={s.suffix.length > 2 ? "ml-2 text-[0.32em] tracking-normal text-ink" : "text-green"} />
-                </dd>
-              </Reveal>
-            ))}
-          </dl>
         </div>
       </section>
 
@@ -170,28 +149,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* PPM */}
+      {/* PPM: the photo runs the full width; the content sits on glass tiles over its right side */}
       <section className="relative isolate overflow-hidden bg-night text-white">
-        <div className="grid lg:grid-cols-2">
-          <ImageReveal direction="left" className="aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[640px]">
-            <Parallax strength={10} className="h-full w-full">
-              <Photo src={ppm.image} alt="Heavy machinery on a mining site" sizes="(min-width: 1024px) 50vw, 100vw" className="h-full w-full" />
-            </Parallax>
-          </ImageReveal>
-          <div className="flex flex-col justify-center px-5 py-16 md:px-16 md:py-24 xl:px-24">
-            <Reveal>
-              <p className="eyebrow !text-white/80">{ppm.short}</p>
+        {/* Wide screens: the whole photo, excavator on the left. Small screens: the excavator in a block at the
+            top, fading into the photo's fog and rock, which carry on behind the tiles. */}
+        <Photo src={ppm.wideImage} alt="An excavator working a mining site" sizes="100vw" position="18% 50%" className="!absolute inset-0 -z-10 hidden h-full w-full lg:block" />
+        <Photo src={ppm.wideImage} alt="" sizes="300vw" position="86% 50%" className="!absolute inset-0 -z-10 h-full w-full lg:hidden" />
+        <Photo
+          src={ppm.wideImage}
+          alt="An excavator working a mining site"
+          sizes="250vw"
+          position="20% 50%"
+          className="!absolute inset-x-0 top-0 -z-10 h-[100vw] w-full [mask-image:linear-gradient(#000_72%,transparent)] sm:h-[66vw] lg:hidden"
+        />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,0,0,0)_30%,rgba(0,0,0,0.55))] lg:bg-[linear-gradient(90deg,rgba(0,0,0,0)_35%,rgba(0,0,0,0.4))]" />
+        <div className="wrap flex min-h-[720px] items-end pb-5 pt-[80vw] sm:pt-[54vw] md:pb-8 lg:min-h-[760px] lg:items-center lg:justify-end lg:py-24">
+          <div className="grid w-full grid-cols-2 gap-3 sm:grid-cols-3 lg:w-[52%] xl:w-[46%]">
+            <Reveal className="glass col-span-full p-7 md:p-10">
+              <p className="eyebrow !text-white/85">{ppm.short}</p>
+              <h2 className="heading h2 mt-4">{ppm.title}</h2>
+              <p className="mt-5 max-w-[52ch] text-white/85 md:text-lg">{ppm.body[0]}</p>
             </Reveal>
-            <RevealText text={ppm.title} className="heading h2 mt-4 max-w-[16ch]" />
-            {ppm.body.map((p, i) => (
-              <Reveal key={p} delay={0.1 + i * 0.1}>
-                <p className="lead mt-6 max-w-[54ch] text-white/75">{p}</p>
+            {ppmCapabilities.map(({ label, icon: Icon }, i) => (
+              <Reveal key={label} delay={0.08 + i * 0.04} className="glass flex min-h-[112px] flex-col justify-between !rounded-[1.25rem] p-4 md:p-5">
+                <Icon className="size-5 text-white/80" strokeWidth={1.6} aria-hidden />
+                <p className="text-sm font-medium leading-tight md:text-base">{label}</p>
               </Reveal>
             ))}
-            <Reveal delay={0.3} className="mt-10">
-              <a href={company.ppmUrl} target="_blank" rel="noreferrer" className="btn btn-white">
-                {ppm.cta} <ArrowUpRight className="size-4" aria-hidden />
-              <span className="sr-only"> (opens in a new tab)</span></a>
+            <Reveal delay={0.3} className="col-span-full">
+              <a
+                href={company.ppmUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-glass group flex items-center justify-between gap-4 rounded-[1.25rem] px-6 py-5 font-medium transition-[background,border-color] duration-200 md:px-7"
+              >
+                <span>
+                  {ppm.cta}
+                  <span className="sr-only"> (opens in a new tab)</span>
+                </span>
+                <ArrowUpRight className="size-5 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
+              </a>
             </Reveal>
           </div>
         </div>
@@ -200,19 +197,19 @@ export default function Home() {
       {/* Our story */}
       <section id="vid" className="section scroll-mt-20">
         <div className="wrap">
-          <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-            <div className="lg:col-span-7">
-              <Reveal>
-                <p className="eyebrow">{tc(story.eyebrow)}</p>
-              </Reveal>
-              <RevealText text={story.title} className="heading h2 mt-4" />
-            </div>
-            <Reveal delay={0.15} className="lead text-muted lg:col-span-4 lg:col-start-9">
-              <p>{story.body}</p>
-            </Reveal>
-          </div>
-          <div className="mt-14 lg:mt-20">
-            <StoryVideos />
+          <Reveal>
+            <p className="eyebrow">{tc(story.eyebrow)}</p>
+          </Reveal>
+          <RevealText text={story.title} className="heading h2 mt-4" />
+          <div className="mt-10 lg:mt-14">
+            <StoryVideos>
+              <div className="flex h-full flex-col justify-between gap-8 rounded-3xl bg-mist p-7 md:rounded-[2rem] md:p-8">
+                <p className="lead text-ink">{story.body}</p>
+                <Link href="/company" className="link self-start">
+                  About PPCO <ArrowRight className="size-4" aria-hidden />
+                </Link>
+              </div>
+            </StoryVideos>
           </div>
         </div>
       </section>

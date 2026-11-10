@@ -15,7 +15,7 @@ export default function Disciplines() {
   const [active, setActive] = useState(0);
 
   return (
-    <div className="flex flex-col gap-2 lg:h-[620px] lg:flex-row">
+    <div className="flex flex-col gap-3 lg:h-[600px] lg:flex-row">
       {items.map((d, i) => {
         const on = i === active;
         return (
@@ -24,7 +24,7 @@ export default function Disciplines() {
             layout
             transition={{ layout: { duration: 0.7, ease } }}
             onMouseEnter={() => setActive(i)}
-            className={`group relative min-h-[96px] overflow-hidden text-white ${on ? "h-[440px] lg:h-auto lg:flex-[3.2]" : "h-[96px] lg:h-auto lg:flex-1"}`}
+            className={`group relative min-h-[88px] overflow-hidden rounded-3xl text-white lg:rounded-[2rem] ${on ? "h-[440px] lg:h-auto lg:flex-[3.4]" : "h-[88px] lg:h-auto lg:flex-1"}`}
           >
             <motion.div
               className="absolute inset-0"
@@ -36,10 +36,9 @@ export default function Disciplines() {
             <motion.div
               aria-hidden
               className="absolute inset-0 bg-night"
-              animate={{ opacity: on ? 0.35 : 0.62 }}
+              animate={{ opacity: on ? 0.12 : 0.55 }}
               transition={{ duration: 0.6 }}
             />
-            <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(0,0,0,0.85))]" />
 
             {/* The panel's control: covers the panel; the open panel's link sits above it */}
             <button
@@ -48,10 +47,10 @@ export default function Disciplines() {
               aria-expanded={on}
               aria-controls={`discipline-${i}`}
               aria-label={tc(d.title)}
-              className={`absolute inset-0 z-0 ${on ? "cursor-default" : "cursor-pointer"} focus-visible:outline-offset-[-4px]`}
+              className={`absolute inset-0 z-0 rounded-[inherit] ${on ? "cursor-default" : "cursor-pointer"} focus-visible:outline-offset-[-4px]`}
             />
 
-            {/* Collapsed label */}
+            {/* Collapsed label, on a small piece of glass */}
             <AnimatePresence>
               {!on && (
                 <motion.span
@@ -60,31 +59,31 @@ export default function Disciplines() {
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
                   aria-hidden
-                  className="pointer-events-none heading absolute bottom-6 left-6 text-2xl lg:bottom-8 lg:left-1/2 lg:-translate-x-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180"
+                  className="glass pointer-events-none absolute bottom-4 left-4 !rounded-full px-5 py-2.5 text-lg font-medium leading-none lg:bottom-5 lg:left-1/2 lg:-translate-x-1/2 lg:px-3 lg:py-5 lg:[writing-mode:vertical-rl] lg:rotate-180"
                 >
                   {tc(d.title)}
                 </motion.span>
               )}
             </AnimatePresence>
 
-            {/* Expanded content */}
+            {/* Expanded content: a sheet of glass along the bottom of the photo */}
             <AnimatePresence>
               {on && (
                 <motion.div
                   key="open"
                   id={`discipline-${i}`}
-                  className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col gap-5 p-6 md:p-10 lg:flex-row lg:items-end lg:justify-between"
+                  className="glass pointer-events-none absolute inset-x-3 bottom-3 z-10 flex items-end justify-between gap-5 p-5 md:inset-x-5 md:bottom-5 md:p-7"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1, transition: { duration: 0.5, ease, delay: 0.25 } }}
                   exit={{ opacity: 0, transition: { duration: 0.15 } }}
                 >
-                  <div>
-                    <h3 className="heading text-[clamp(2.25rem,4vw,4rem)] leading-none">{tc(d.title)}</h3>
-                    <p className="mt-4 max-w-[38ch] text-white/85">{d.text}</p>
+                  <div className="min-w-0">
+                    <h3 className="heading text-[clamp(1.75rem,2.6vw,2.75rem)] leading-none">{tc(d.title)}</h3>
+                    <p className="mt-3 max-w-[44ch] text-white/90">{d.text}</p>
                   </div>
                   <Link
                     href={d.href}
-                    className="pointer-events-auto grid size-14 shrink-0 place-items-center rounded-full bg-white text-ink transition-colors duration-200 hover:bg-mist"
+                    className="btn-glass pointer-events-auto grid size-12 shrink-0 place-items-center rounded-full transition-[background,border-color] duration-200 md:size-14"
                     aria-label={`${tc(d.title)}: services`}
                   >
                     <ArrowUpRight className="size-5" />

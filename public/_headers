@@ -10,3 +10,9 @@
 
 /video/*
   Cache-Control: public, max-age=604800
+
+/images/*
+  Cache-Control: public, max-age=604800
+
+/map/*
+  Cache-Control: public, max-age=604800

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import Logo from "./Logo";
 import { company, footer, nav, quoteHref } from "@/content/site";
-import { RevealText } from "./motion/primitives";
+import FluidText from "./FluidText";
 import { tc } from "@/lib/text";
 
 export default function Footer() {
@@ -79,14 +79,14 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Decorative sign-off (WCAG treats pure decoration as exempt from contrast); hidden from screen readers */}
+        {/* Decorative sign-off (WCAG treats pure decoration as exempt from contrast); hidden from screen readers.
+            Moving the pointer over it stirs green and purple smoke inside the letters (see FluidText). */}
         {/* Sized to the footer's width: at this weight and tracking the line is 9.92× its font size wide,
             so 10% of the container width fills ~99% of one line, at any screen size. */}
-        <div aria-hidden className="border-b border-white/10 py-10 [container-type:inline-size] md:py-14">
-          <RevealText
-            as="p"
+        <div className="border-b border-white/10 pb-6 pt-10 [container-type:inline-size] md:pb-9 md:pt-14">
+          <FluidText
             text={tc(company.tagline)}
-            className="heading select-none whitespace-nowrap text-[10cqi] leading-[0.95] tracking-[-0.045em] text-white/[0.12] [text-wrap:nowrap]"
+            className="heading select-none whitespace-nowrap text-[10cqi] leading-[0.95] tracking-[-0.045em] [text-wrap:nowrap]"
           />
         </div>
 

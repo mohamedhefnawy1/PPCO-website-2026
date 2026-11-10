@@ -193,6 +193,8 @@ export const ppm = {
   ],
   cta: "Visit PPM Website",
   image: up("2025/11/heavy-machinery-used-construction-industry-engineering-Large.jpeg"),
+  // The same photo, mirrored and extended to the right for the full-width home section (public/images).
+  wideImage: "/images/ppm-wide.jpg",
 };
 
 /* ───────────────────────── Company ───────────────────────── */

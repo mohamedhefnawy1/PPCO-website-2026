@@ -90,7 +90,7 @@ export default function Header() {
       <motion.header
         animate={{ y: hidden && !menu && !mobile ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease }}
-        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${light ? "bg-transparent" : "bg-white shadow-[0_1px_0_0_var(--color-line)]"}`}
+        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${light ? "bg-transparent" : "bg-white/80 shadow-[0_1px_0_0_rgb(0_0_0/0.08)] backdrop-blur-xl backdrop-saturate-150"}`}
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           setMenu(null);
@@ -191,7 +191,7 @@ export default function Header() {
               <FileText className="size-4" aria-hidden /> Company Profile
               <span className="sr-only">(PDF, opens in a new tab)</span>
             </a>
-            <Link href={quoteHref()} className={`btn ${light ? "btn-white" : "btn-primary"}`}>
+            <Link href={quoteHref()} className={`btn ${light ? "btn-glass" : "btn-primary"}`}>
               Request a Quote
             </Link>
           </div>
@@ -204,7 +204,7 @@ export default function Header() {
             aria-expanded={mobile}
             aria-controls="mobile-menu"
             className={`flex h-11 items-center gap-2.5 rounded-full border pl-4 pr-3.5 text-sm font-medium transition-[background-color,border-color,color] duration-200 active:scale-[0.97] lg:hidden ${
-              light ? "border-white/40 bg-black/25 text-white backdrop-blur-md hover:bg-black/40" : "border-line bg-white text-ink hover:border-ink"
+              light ? "btn-glass" : "border-line bg-white text-ink hover:border-ink"
             }`}
           >
             <span>{mobile ? "Close" : "Menu"}</span>

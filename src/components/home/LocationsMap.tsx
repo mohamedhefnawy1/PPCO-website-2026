@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Clock, MapPin } from "lucide-react";
-import { COAST, MAP, locationKinds, locations, type Location, type LocationKind } from "@/content/locations";
+import { MAP, leaderPath, locationKinds, locations, type Location, type LocationKind } from "@/content/locations";
+import { COUNTRY_LABELS, REGION, SEA_LABELS } from "@/content/map-geo";
+import { Reveal, RevealText } from "../motion/primitives";
 import type { LocationStats } from "@/lib/csv";
 
 const ease = [0.23, 1, 0.32, 1] as const;
@@ -38,10 +40,22 @@ function Swatch({ kind, className = "" }: { kind: LocationKind; className?: stri
 
 /**
  * Interactive map of PPCO's head office, regional offices, site offices and project locations.
+ * The whole section is the map: Saudi Arabia and the countries around it run edge to edge behind the
+ * heading and the details panel, which is a sheet of glass laid over it.
  * Pick a location (label, dot, list or arrows) to see its role and the projects listed there,
  * with links into the Projects page filtered to that location.
  */
-export default function LocationsMap({ stats }: { stats: Record<string, LocationStats> }) {
+export default function LocationsMap({
+  stats,
+  eyebrow,
+  title,
+  body,
+}: {
+  stats: Record<string, LocationStats>;
+  eyebrow: string;
+  title: string;
+  body: string;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-15% 0px" });
   const reduce = useReducedMotion();
@@ -70,11 +84,23 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
     reduce ? {} : { initial: { opacity: 0 }, animate: shown ? { opacity: 1 } : { opacity: 0 }, transition: { duration: 0.5, ease, delay } };
 
   return (
-    <div ref={ref} className="grid gap-8 lg:grid-cols-12 lg:gap-8">
+    <section id="locations" className="relative isolate scroll-mt-20 overflow-hidden bg-sea">
+     <div className="wrap relative py-16 md:py-24">
+      <div className="relative z-10 max-w-xl">
+        <Reveal>
+          <p className="eyebrow">{eyebrow}</p>
+        </Reveal>
+        <RevealText text={title} className="heading h2 mt-4" />
+        <Reveal delay={0.1}>
+          <p className="mt-4 text-muted">{body}</p>
+        </Reveal>
+      </div>
+
+    <div ref={ref} className="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-12 lg:gap-8">
       {/* Map */}
       <div className="min-w-0 lg:col-span-8">
         {/* Legend doubles as a filter */}
-        <div role="group" aria-label="Show on the map" className="flex flex-wrap gap-2">
+        <div role="group" aria-label="Show on the map" className="relative z-10 flex flex-wrap gap-2">
           {KINDS.map((k) => {
             const on = !hidden.has(k);
             return (
@@ -83,8 +109,8 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
                 type="button"
                 aria-pressed={on}
                 onClick={() => toggleKind(k)}
-                className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-[background-color,border-color,color,opacity] duration-200 ${
-                  on ? "border-line bg-white text-ink hover:border-ink" : "border-dashed border-line bg-transparent text-muted opacity-70 hover:opacity-100"
+                className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-[background,border-color,color,opacity] duration-200 ${
+                  on ? "btn-glass-light" : "border-dashed border-ink/25 bg-transparent text-muted opacity-70 hover:opacity-100"
                 }`}
               >
                 <Swatch kind={k} className={on ? "" : "opacity-40"} />
@@ -94,24 +120,51 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
           })}
         </div>
 
-        <div className="relative mt-6 w-full select-none" style={{ aspectRatio: `${MAP.width} / ${MAP.height}` }}>
+        <div className="relative -ml-[14%] mt-6 w-[118%] select-none md:ml-0 md:w-full" style={{ aspectRatio: `${MAP.width} / ${MAP.height}` }}>
+          {/* The region, drawn once as a static file and laid out in the map's own coordinates so it
+              runs past the map box to the edges of the section. */}
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute -z-10 [mask-image:linear-gradient(180deg,transparent,#000_5%,#000_95%,transparent)]"
+            style={{ left: px(REGION.x), top: py(REGION.y), width: `${(REGION.width / MAP.width) * 100}%`, height: `${(REGION.height / MAP.height) * 100}%` }}
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: shown ? 1 : 0 }}
+            transition={{ duration: 0.9, ease }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={REGION.src} alt="" className="h-full w-full" decoding="async" loading="lazy" />
+            {/* Names above the map box would sit under the heading, so they are left out */}
+            {COUNTRY_LABELS.filter((c) => c.y > MAP.minY + 20).map((c) => (
+              <span
+                key={c.name}
+                className={`absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-medium uppercase ${
+                  c.name === "Saudi Arabia" ? "text-[10px] tracking-[0.3em] text-ink/30 md:text-sm" : "text-[9px] tracking-[0.16em] text-ink/35 md:text-[11px]"
+                }`}
+                style={{ left: `${((c.x - REGION.x) / REGION.width) * 100}%`, top: `${((c.y - REGION.y) / REGION.height) * 100}%` }}
+              >
+                {c.name}
+              </span>
+            ))}
+            {SEA_LABELS.filter((c) => c.y > MAP.minY + 20).map((c) => (
+              <span
+                key={c.name}
+                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] italic tracking-[0.08em] text-[#6f8a88] md:text-xs"
+                style={{ left: `${((c.x - REGION.x) / REGION.width) * 100}%`, top: `${((c.y - REGION.y) / REGION.height) * 100}%` }}
+              >
+                {c.name}
+              </span>
+            ))}
+          </motion.div>
           <svg viewBox={MAP.viewBox} className="absolute inset-0 h-full w-full overflow-visible" aria-hidden>
-            <motion.path
-              d={COAST}
-              fill="#efefef"
-              initial={reduce ? false : { opacity: 0 }}
-              animate={{ opacity: shown ? 1 : 0 }}
-              transition={{ duration: 0.8, ease }}
-            />
             {/* Leader lines to labels set away from their dots */}
             {locations.map((l) =>
               l.label.leader ? (
                 <motion.path
                   key={l.id}
-                  d={l.label.leader}
+                  d={leaderPath(l)}
                   fill="none"
-                  stroke={l.id === selectedId ? "#111111" : "#c9c9c9"}
-                  strokeWidth={1.5}
+                  stroke={l.id === selectedId ? "#111111" : "#aab1b0"}
+                  strokeWidth={1.25}
                   className={l.id === selectedId || l.kind === "hq" ? "" : "max-md:hidden"}
                   initial={reduce ? false : { pathLength: 0 }}
                   animate={{ pathLength: shown ? 1 : 0, opacity: hidden.has(l.kind) ? 0.15 : 1 }}
@@ -194,7 +247,7 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
                 aria-pressed={on}
                 aria-label={`${l.name}, ${locationKinds[l.kind].label}`}
                 onClick={() => setSelectedId(l.id)}
-                className={`absolute whitespace-nowrap rounded-sm px-1 py-0.5 leading-none transition-[color,opacity] duration-200 ${
+                className={`absolute whitespace-nowrap rounded-sm px-1 py-0.5 leading-none [text-shadow:0_0_3px_#fff,0_0_6px_#fff] transition-[color,opacity] duration-200 ${
                   on ? "text-ink" : l.kind === "project" ? "text-muted hover:text-ink" : "text-ink/80 hover:text-ink"
                 } ${l.kind === "hq" ? "text-base font-semibold lg:text-lg" : l.kind === "project" ? "text-xs font-medium" : "text-sm font-medium"} ${
                   off ? "pointer-events-none opacity-15" : ""
@@ -211,13 +264,13 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
 
       {/* Details */}
       <div className="min-w-0 lg:col-span-4" role="region" aria-label="Location details">
-        <div className="border border-line bg-white p-6 md:p-8 lg:sticky lg:top-[calc(var(--header-offset)+24px)] lg:transition-[top] lg:duration-500">
+        <div className="glass-light p-6 md:p-8 lg:sticky lg:top-[calc(var(--header-offset)+24px)] lg:transition-[top] lg:duration-500">
           <label className="block">
-            <span className="text-sm font-medium text-muted">Location</span>
+            <span className="text-sm font-medium text-ink/70">Location</span>
             <select
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
-              className="mt-2 w-full cursor-pointer appearance-none border border-line bg-white bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M4 6l4 4 4-4%22 fill=%22none%22 stroke=%22%23111%22 stroke-width=%221.5%22/></svg>')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat py-3 pl-3 pr-10 text-base outline-none transition-colors focus:border-ink"
+              className="mt-2 w-full cursor-pointer appearance-none rounded-xl border border-ink/15 bg-white/70 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M4 6l4 4 4-4%22 fill=%22none%22 stroke=%22%23111%22 stroke-width=%221.5%22/></svg>')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat py-3 pl-3 pr-10 text-base outline-none transition-colors focus:border-ink"
             >
               {KINDS.filter((k) => !hidden.has(k)).map((k) => (
                 <optgroup key={k} label={locationKinds[k].label}>
@@ -264,14 +317,14 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
                 )}
 
                 {s.total > 0 ? (
-                  <div className="mt-6 border-t border-line pt-5">
+                  <div className="mt-6 border-t border-ink/10 pt-5">
                     <p className="text-sm text-muted">
                       <span className="tabular heading text-2xl text-ink">{s.total}</span> listed {s.total === 1 ? "project" : "projects"}
                       {s.clients.length > 0 && <> for {s.clients.join(", ")}</>}
                     </p>
                     <ul className="mt-4 space-y-2 text-sm">
                       {s.sample.map((p) => (
-                        <li key={p} className="border-l-2 border-line pl-3">
+                        <li key={p} className="border-l-2 border-ink/15 pl-3">
                           {p.replace(/^"|"$/g, "")}
                         </li>
                       ))}
@@ -287,7 +340,7 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
                     </ul>
                   </div>
                 ) : (
-                  <div className="mt-6 border-t border-line pt-5">
+                  <div className="mt-6 border-t border-ink/10 pt-5">
                     <p className="text-sm text-muted">
                       {selected.office ? "Visit or contact this office for enquiries in the region." : "This location’s projects are not in the published project lists yet."}
                     </p>
@@ -300,7 +353,7 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
             </AnimatePresence>
           </div>
 
-          <div className="mt-6 flex items-center justify-between border-t border-line pt-5">
+          <div className="mt-6 flex items-center justify-between border-t border-ink/10 pt-5">
             <button type="button" onClick={() => step(-1)} className="inline-flex h-10 items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-ink">
               <ArrowLeft className="size-4" aria-hidden /> Previous
             </button>
@@ -314,5 +367,7 @@ export default function LocationsMap({ stats }: { stats: Record<string, Location
         </div>
       </div>
     </div>
+     </div>
+    </section>
   );
 }

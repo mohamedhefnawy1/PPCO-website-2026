@@ -56,7 +56,7 @@ export default function StoryVideos({ children }: { children?: React.ReactNode }
             <button
               type="button"
               onClick={() => setPlaying(null)}
-              className="absolute right-4 top-4 grid size-11 place-items-center rounded-full bg-white text-ink transition-colors hover:bg-mist"
+              className="absolute right-4 top-4 grid size-11 place-items-center rounded bg-white text-ink transition-colors hover:bg-mist"
               aria-label="Close video"
               autoFocus
             >
@@ -66,7 +66,7 @@ export default function StoryVideos({ children }: { children?: React.ReactNode }
               initial={{ scale: 0.97, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="aspect-video w-full max-w-6xl overflow-hidden rounded-[var(--radius-sm)]"
+              className="aspect-video w-full max-w-6xl overflow-hidden rounded"
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
@@ -97,7 +97,7 @@ function VideoCard({ onPlay, poster, index, large = false }: { onPlay: () => voi
       <span aria-hidden className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/10" />
       <span
         aria-hidden
-        className={`absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-ink shadow-[0_8px_24px_rgb(0_0_0/0.25)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 ${
+        className={`absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded bg-white text-ink shadow-[0_8px_24px_rgb(0_0_0/0.25)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 ${
           large ? "size-16 md:size-24" : "size-14 md:size-16"
         }`}
       >

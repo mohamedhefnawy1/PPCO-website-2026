@@ -203,7 +203,7 @@ export default function Header() {
             onClick={() => (mobile ? closeMobile() : setMobile(true))}
             aria-expanded={mobile}
             aria-controls="mobile-menu"
-            className={`flex h-11 items-center gap-2.5 rounded-full border pl-4 pr-3.5 text-sm font-medium transition-[background-color,border-color,color] duration-200 active:scale-[0.97] lg:hidden ${
+            className={`flex h-11 items-center gap-2.5 rounded border pl-4 pr-3.5 text-sm font-medium transition-[background-color,border-color,color] duration-200 active:scale-[0.97] lg:hidden ${
               light ? "border-white bg-white text-ink" : "border-line bg-white text-ink hover:border-ink"
             }`}
           >

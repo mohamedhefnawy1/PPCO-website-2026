@@ -21,16 +21,11 @@
 
 @layer base {
   :root {
-    /* Corners, after Apple's: generous on cards, photos and glass; smaller on fields; buttons are capsules. */
-    --radius: 22px;
-    --radius-sm: 12px;
+    /* One corner radius for the whole site: square shapes, very slightly eased. */
+    --radius: 4px;
+    --radius-sm: 4px;
     --header-h: 72px;
     --header-offset: var(--header-h);
-  }
-  @media (min-width: 768px) {
-    :root {
-      --radius: 28px;
-    }
   }
   @media (min-width: 1024px) {
     :root {
@@ -134,7 +129,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--radius);
     padding: 0.85rem 1.4rem;
     font-size: 0.9375rem;
     font-weight: 500;
@@ -188,7 +183,7 @@
     backdrop-filter: blur(18px) saturate(1.8) brightness(1.06);
   }
   .glass {
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.03) 45%, rgb(255 255 255 / 0.07)), rgb(20 20 22 / 0.14);
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.03) 45%, rgb(255 255 255 / 0.07)), rgb(20 20 22 / 0.22);
     box-shadow:
       inset 0 0 0 1px rgb(255 255 255 / 0.12),
       inset 0 1px 1px rgb(255 255 255 / 0.4),
@@ -217,7 +212,7 @@
     z-index: -1;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, rgb(255 255 255 / 0.75), rgb(255 255 255 / 0.08) 35%, rgb(255 255 255 / 0.04) 65%, rgb(255 255 255 / 0.45));
+    background: linear-gradient(135deg, rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.1) 35%, rgb(255 255 255 / 0.05) 65%, rgb(255 255 255 / 0.35));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
@@ -249,7 +244,7 @@
       background: rgb(255 255 255 / 0.94);
     }
   }
-  /* Frame for photos and cards, with the site's corner radius. */
+  /* Frame for photos and cards: square, with the site's slight corner radius. */
   .frame {
     overflow: hidden;
     border-radius: var(--radius);

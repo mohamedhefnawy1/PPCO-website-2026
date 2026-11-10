@@ -268,7 +268,7 @@ export default function ProjectsExplorer({ divisions, numbersTitle }: { division
               >
                 <span className="flex items-center gap-2">
                   <SlidersHorizontal className="size-4" aria-hidden /> Filters
-                  {activeCount > 0 && <span className="tabular grid min-w-5 place-items-center rounded-full bg-ink px-1.5 text-xs text-white">{activeCount}</span>}
+                  {activeCount > 0 && <span className="tabular grid min-w-5 place-items-center rounded bg-ink px-1.5 text-xs text-white">{activeCount}</span>}
                 </span>
                 <span className="text-muted">{panelOpen ? "Hide" : "Show"}</span>
               </button>

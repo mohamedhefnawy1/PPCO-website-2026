@@ -138,7 +138,7 @@ export default function CompanyPage() {
                 <ul className="mt-6 space-y-3">
                   {b.items.map((it) => (
                     <li key={it} className="flex gap-4 border-t border-line pt-3">
-                      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded bg-green/12 text-green-deep">
+                      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-green/12 text-green-deep">
                         <Check className="size-3.5" aria-hidden />
                       </span>
                       <span>{it}</span>

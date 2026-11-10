@@ -97,7 +97,7 @@ export default function Home() {
             speed: 55,
             reverse: r === 1,
             content: row.map(({ src, box }) => (
-              <span key={src} className="mr-3 flex h-28 w-44 shrink-0 items-center justify-center rounded bg-white px-5 py-4 md:h-32 md:w-52 md:px-6 md:py-5">
+              <span key={src} className="mr-3 flex h-28 w-44 shrink-0 items-center justify-center rounded-2xl bg-white px-5 py-4 md:h-32 md:w-52 md:px-6 md:py-5">
                 {/* Cropped to the logo's own outline and fitted inside the tile, so no logo is clipped or undersized.
                     An SVG <image> loads straight away, unlike a lazy <img> inside a moving band. */}
                 <svg viewBox={box.join(" ")} preserveAspectRatio="xMidYMid meet" className="h-full w-full" aria-hidden>
@@ -129,18 +129,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Core disciplines: a plain row of four cards */}
+      {/* Core disciplines: four photos, each with its name and text on glass */}
       <section className="section">
         <div className="wrap">
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
-            <div className="lg:col-span-7">
+            <div className="lg:col-span-5">
               <Reveal>
                 <p className="eyebrow">{tc(disciplines.eyebrow)}</p>
               </Reveal>
               <RevealText text={disciplines.title} className="heading h2 mt-4" />
             </div>
-            <Reveal delay={0.15} className="lead text-muted lg:col-span-4 lg:col-start-9">
-              <p>{disciplines.body}</p>
+            <Reveal delay={0.15} className="lead text-muted lg:col-span-7 lg:col-start-6">
+              <p className="lg:[text-wrap:balance]">{disciplines.body}</p>
             </Reveal>
           </div>
           <div className="mt-12 lg:mt-16">
@@ -171,7 +171,7 @@ export default function Home() {
               <p className="mt-5 max-w-[52ch] text-white/85 md:text-lg">{ppm.body[0]}</p>
             </Reveal>
             {ppmCapabilities.map(({ label, icon: Icon }, i) => (
-              <Reveal key={label} delay={0.08 + i * 0.04} className="glass flex min-h-[112px] flex-col justify-between p-4 md:p-5">
+              <Reveal key={label} delay={0.08 + i * 0.04} className="glass flex min-h-[112px] flex-col justify-between !rounded-[18px] p-4 md:p-5">
                 <Icon className="size-5 text-white/80" strokeWidth={1.6} aria-hidden />
                 <p className="text-sm font-medium leading-tight md:text-base">{label}</p>
               </Reveal>
@@ -181,7 +181,7 @@ export default function Home() {
                 href={company.ppmUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-glass group flex items-center justify-between gap-4 rounded px-6 py-5 font-medium transition-[background,border-color] duration-200 md:px-7"
+                className="group flex items-center justify-between gap-4 rounded-full bg-white px-6 py-4 font-medium text-ink transition-colors duration-200 hover:bg-mist md:px-7"
               >
                 <span>
                   {ppm.cta}
@@ -203,7 +203,7 @@ export default function Home() {
           <RevealText text={story.title} className="heading h2 mt-4" />
           <div className="mt-10 lg:mt-14">
             <StoryVideos>
-              <div className="flex h-full flex-col justify-between gap-8 rounded bg-mist p-7 md:p-8">
+              <div className="flex h-full flex-col justify-between gap-8 rounded-[var(--radius)] bg-mist p-7 md:p-8">
                 <p className="lead text-ink">{story.body}</p>
                 <Link href="/company" className="link self-start">
                   About PPCO <ArrowRight className="size-4" aria-hidden />

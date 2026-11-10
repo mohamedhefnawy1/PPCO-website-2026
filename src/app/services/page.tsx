@@ -48,7 +48,7 @@ export default function ServicesPage() {
                   <div className="flex h-full flex-col border border-line p-6 transition-colors duration-300 hover:border-ink md:p-8">
                     <h3 className="heading h3">{tc(d.title)}</h3>
                     <p className="mb-8 mt-4 text-muted">{d.scope}</p>
-                    <span className="mt-auto grid size-10 place-items-center self-start rounded border border-line text-ink transition-colors duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-white" aria-hidden>
+                    <span className="mt-auto grid size-10 place-items-center self-start rounded-full border border-line text-ink transition-colors duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-white" aria-hidden>
                       <ArrowDown className="size-4" />
                     </span>
                   </div>

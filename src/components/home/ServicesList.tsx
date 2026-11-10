@@ -79,7 +79,7 @@ export default function ServicesList() {
                 </div>
               ))}
               {/* The service's name and description, on glass inside the photo */}
-              <div className="glass absolute inset-x-4 bottom-4 z-[2] p-6 xl:inset-x-5 xl:bottom-5 xl:p-7">
+              <div className="glass absolute inset-x-4 bottom-4 z-[2] !rounded-[18px] p-6 xl:p-7">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div key={active} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.18 }}>
                     <p className="heading text-2xl xl:text-[1.75rem]">{items[active].title}</p>
@@ -99,7 +99,7 @@ export default function ServicesList() {
             <Link href="/services" className="group block">
               <div className="frame relative aspect-[4/5]">
                 <Photo src={images[i]} alt="" sizes="(min-width: 640px) 56vw, 82vw" className="h-full w-full" />
-                <div className="glass absolute inset-x-3 bottom-3 p-5">
+                <div className="glass absolute inset-x-3 bottom-3 !rounded-[18px] p-5">
                   <p className="heading text-xl">{s.title}</p>
                   <p className="mt-1.5 text-[0.95rem] leading-snug text-white/90">{s.text}</p>
                 </div>

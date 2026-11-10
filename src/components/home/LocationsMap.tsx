@@ -85,9 +85,9 @@ export default function LocationsMap({
 
   return (
     <section id="locations" className="relative isolate scroll-mt-20 overflow-hidden bg-white">
-      {/* The map fades into the page at the top and bottom of the section */}
+      {/* The map fades into the white above it and into the grey of the section below */}
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-[1] h-40 bg-gradient-to-b from-white via-white/80 to-transparent md:h-56" />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-[1] h-40 bg-gradient-to-t from-white via-white/80 to-transparent md:h-56" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-[1] h-40 bg-gradient-to-t from-mist via-mist/80 to-transparent md:h-56" />
      <div className="wrap relative py-16 md:py-24">
       <div className="relative z-10 max-w-xl">
         <Reveal>
@@ -112,8 +112,8 @@ export default function LocationsMap({
                 type="button"
                 aria-pressed={on}
                 onClick={() => toggleKind(k)}
-                className={`inline-flex h-10 items-center gap-2 rounded border px-4 text-sm font-medium transition-[background,border-color,color,opacity] duration-200 ${
-                  on ? "btn-glass-light" : "border-dashed border-ink/25 bg-transparent text-muted opacity-70 hover:opacity-100"
+                className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-[background,border-color,color,opacity] duration-200 ${
+                  on ? "border-line bg-white text-ink shadow-[0_2px_8px_rgb(0_0_0/0.06)] hover:border-ink" : "border-dashed border-ink/25 bg-transparent text-muted opacity-70 hover:opacity-100"
                 }`}
               >
                 <Swatch kind={k} className={on ? "" : "opacity-40"} />
@@ -273,7 +273,7 @@ export default function LocationsMap({
             <select
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
-              className="mt-2 w-full cursor-pointer appearance-none rounded border border-ink/15 bg-white/70 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M4 6l4 4 4-4%22 fill=%22none%22 stroke=%22%23111%22 stroke-width=%221.5%22/></svg>')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat py-3 pl-3 pr-10 text-base outline-none transition-colors focus:border-ink"
+              className="mt-2 w-full cursor-pointer appearance-none rounded-[var(--radius-sm)] border border-ink/15 bg-white/70 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M4 6l4 4 4-4%22 fill=%22none%22 stroke=%22%23111%22 stroke-width=%221.5%22/></svg>')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat py-3 pl-3 pr-10 text-base outline-none transition-colors focus:border-ink"
             >
               {KINDS.filter((k) => !hidden.has(k)).map((k) => (
                 <optgroup key={k} label={locationKinds[k].label}>

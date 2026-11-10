@@ -56,7 +56,7 @@ export default function StoryVideos({ children }: { children?: React.ReactNode }
             <button
               type="button"
               onClick={() => setPlaying(null)}
-              className="btn-glass absolute right-4 top-4 grid size-11 place-items-center rounded"
+              className="absolute right-4 top-4 grid size-11 place-items-center rounded-full bg-white text-ink transition-colors hover:bg-mist"
               aria-label="Close video"
               autoFocus
             >
@@ -66,7 +66,7 @@ export default function StoryVideos({ children }: { children?: React.ReactNode }
               initial={{ scale: 0.97, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="aspect-video w-full max-w-6xl overflow-hidden rounded"
+              className="aspect-video w-full max-w-6xl overflow-hidden rounded-[var(--radius-sm)]"
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
@@ -84,7 +84,7 @@ export default function StoryVideos({ children }: { children?: React.ReactNode }
   );
 }
 
-/** Video card: poster with a glass play button; the photo eases in slightly on hover. */
+/** Video card: poster with a play button; the photo eases in slightly on hover. */
 function VideoCard({ onPlay, poster, index, large = false }: { onPlay: () => void; poster: string; index: number; large?: boolean }) {
   return (
     <button type="button" onClick={onPlay} className="frame group relative block w-full text-left" aria-label={`Play PPCO video ${index + 1}`}>
@@ -97,15 +97,12 @@ function VideoCard({ onPlay, poster, index, large = false }: { onPlay: () => voi
       <span aria-hidden className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/10" />
       <span
         aria-hidden
-        className={`btn-glass absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded transition-[background,border-color,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 ${
+        className={`absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-ink shadow-[0_8px_24px_rgb(0_0_0/0.25)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 ${
           large ? "size-16 md:size-24" : "size-14 md:size-16"
         }`}
       >
         <Play className={`translate-x-[1px] fill-current ${large ? "size-5 md:size-7" : "size-4 md:size-5"}`} />
       </span>
-      {large && (
-        <span className="glass absolute bottom-4 left-4 px-4 py-2 text-sm font-medium md:bottom-6 md:left-6">Play video</span>
-      )}
     </button>
   );
 }

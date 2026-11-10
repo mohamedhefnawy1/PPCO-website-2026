@@ -191,7 +191,7 @@ export default function Header() {
               <FileText className="size-4" aria-hidden /> Company Profile
               <span className="sr-only">(PDF, opens in a new tab)</span>
             </a>
-            <Link href={quoteHref()} className={`btn ${light ? "btn-glass" : "btn-primary"}`}>
+            <Link href={quoteHref()} className={`btn ${light ? "btn-white" : "btn-primary"}`}>
               Request a Quote
             </Link>
           </div>
@@ -203,8 +203,8 @@ export default function Header() {
             onClick={() => (mobile ? closeMobile() : setMobile(true))}
             aria-expanded={mobile}
             aria-controls="mobile-menu"
-            className={`flex h-11 items-center gap-2.5 rounded border pl-4 pr-3.5 text-sm font-medium transition-[background-color,border-color,color] duration-200 active:scale-[0.97] lg:hidden ${
-              light ? "btn-glass" : "border-line bg-white text-ink hover:border-ink"
+            className={`flex h-11 items-center gap-2.5 rounded-full border pl-4 pr-3.5 text-sm font-medium transition-[background-color,border-color,color] duration-200 active:scale-[0.97] lg:hidden ${
+              light ? "border-white bg-white text-ink" : "border-line bg-white text-ink hover:border-ink"
             }`}
           >
             <span>{mobile ? "Close" : "Menu"}</span>

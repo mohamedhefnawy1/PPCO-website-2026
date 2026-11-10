@@ -181,7 +181,7 @@ export default function HomeHero({ clients }: { clients: string[] }) {
         >
           <p className="mt-5 max-w-[680px] text-base text-white [text-wrap:pretty] md:text-lg">{home.hero.lead}</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-            <Link href="#vid" className="btn btn-glass-light">
+            <Link href="#vid" className="btn btn-white">
               <PlayCircle className="size-4" aria-hidden /> {home.hero.cta}
             </Link>
             <a

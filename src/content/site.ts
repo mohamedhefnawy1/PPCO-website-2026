@@ -180,7 +180,8 @@ export const home = {
     title: "We’re Here to Support Your Project",
     body: "Whether you’re planning, building, or expanding, PPCO is ready to collaborate.",
     button: "Contact Us",
-    image: up("2026/01/صورة-DSC_5261-كبيرة-Large.jpeg"),
+    // PPCO fleet photo supplied by the client, upscaled 4× (public/images).
+    image: "/images/cta-trucks.jpg",
   },
 };
 

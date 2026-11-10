@@ -84,7 +84,10 @@ export default function LocationsMap({
     reduce ? {} : { initial: { opacity: 0 }, animate: shown ? { opacity: 1 } : { opacity: 0 }, transition: { duration: 0.5, ease, delay } };
 
   return (
-    <section id="locations" className="relative isolate scroll-mt-20 overflow-hidden bg-sea">
+    <section id="locations" className="relative isolate scroll-mt-20 overflow-hidden bg-white">
+      {/* The map fades into the page at the top and bottom of the section */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-[1] h-40 bg-gradient-to-b from-white via-white/80 to-transparent md:h-56" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 -z-[1] h-40 bg-gradient-to-t from-white via-white/80 to-transparent md:h-56" />
      <div className="wrap relative py-16 md:py-24">
       <div className="relative z-10 max-w-xl">
         <Reveal>
@@ -109,7 +112,7 @@ export default function LocationsMap({
                 type="button"
                 aria-pressed={on}
                 onClick={() => toggleKind(k)}
-                className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-[background,border-color,color,opacity] duration-200 ${
+                className={`inline-flex h-10 items-center gap-2 rounded border px-4 text-sm font-medium transition-[background,border-color,color,opacity] duration-200 ${
                   on ? "btn-glass-light" : "border-dashed border-ink/25 bg-transparent text-muted opacity-70 hover:opacity-100"
                 }`}
               >
@@ -125,7 +128,7 @@ export default function LocationsMap({
               runs past the map box to the edges of the section. */}
           <motion.div
             aria-hidden
-            className="pointer-events-none absolute -z-10 [mask-image:linear-gradient(180deg,transparent,#000_5%,#000_95%,transparent)]"
+            className="pointer-events-none absolute -z-10"
             style={{ left: px(REGION.x), top: py(REGION.y), width: `${(REGION.width / MAP.width) * 100}%`, height: `${(REGION.height / MAP.height) * 100}%` }}
             initial={reduce ? false : { opacity: 0 }}
             animate={{ opacity: shown ? 1 : 0 }}
@@ -148,7 +151,7 @@ export default function LocationsMap({
             {SEA_LABELS.filter((c) => c.y > MAP.minY + 20).map((c) => (
               <span
                 key={c.name}
-                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] italic tracking-[0.08em] text-[#6f8a88] md:text-xs"
+                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] italic tracking-[0.08em] text-ink/35 md:text-xs"
                 style={{ left: `${((c.x - REGION.x) / REGION.width) * 100}%`, top: `${((c.y - REGION.y) / REGION.height) * 100}%` }}
               >
                 {c.name}
@@ -270,7 +273,7 @@ export default function LocationsMap({
             <select
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
-              className="mt-2 w-full cursor-pointer appearance-none rounded-xl border border-ink/15 bg-white/70 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M4 6l4 4 4-4%22 fill=%22none%22 stroke=%22%23111%22 stroke-width=%221.5%22/></svg>')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat py-3 pl-3 pr-10 text-base outline-none transition-colors focus:border-ink"
+              className="mt-2 w-full cursor-pointer appearance-none rounded border border-ink/15 bg-white/70 bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><path d=%22M4 6l4 4 4-4%22 fill=%22none%22 stroke=%22%23111%22 stroke-width=%221.5%22/></svg>')] bg-[length:16px] bg-[right_12px_center] bg-no-repeat py-3 pl-3 pr-10 text-base outline-none transition-colors focus:border-ink"
             >
               {KINDS.filter((k) => !hidden.has(k)).map((k) => (
                 <optgroup key={k} label={locationKinds[k].label}>

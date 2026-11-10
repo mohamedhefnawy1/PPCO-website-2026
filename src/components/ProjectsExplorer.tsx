@@ -231,12 +231,12 @@ export default function ProjectsExplorer({ divisions, numbersTitle }: { division
               >
                 <span className="flex items-center gap-2">
                   <SlidersHorizontal className="size-4" aria-hidden /> Filters
-                  {activeCount > 0 && <span className="tabular grid min-w-5 place-items-center rounded-full bg-ink px-1.5 text-xs text-white">{activeCount}</span>}
+                  {activeCount > 0 && <span className="tabular grid min-w-5 place-items-center rounded bg-ink px-1.5 text-xs text-white">{activeCount}</span>}
                 </span>
                 <span className="text-muted">{panelOpen ? "Hide" : "Show"}</span>
               </button>
 
-              <div id="project-filters" className={`${panelOpen ? "mt-4 block" : "hidden"} space-y-8 lg:sticky lg:top-[calc(var(--header-offset)+24px)] lg:mt-0 lg:block lg:transition-[top] lg:duration-500`}>
+              <div id="project-filters" className={`${panelOpen ? "mt-4 block" : "hidden"} space-y-8 lg:sticky lg:top-[calc(var(--header-offset)+24px)] lg:mt-0 lg:block lg:max-h-[calc(100svh-var(--header-offset)-48px)] lg:overflow-y-auto lg:-ml-1 lg:overscroll-contain lg:pb-2 lg:pl-1 lg:pr-4 lg:transition-[top,max-height] lg:duration-500 lg:[scrollbar-width:thin]`}>
                 <fieldset>
                   <legend className="text-sm font-medium text-muted">Division</legend>
                   <div className="mt-3 space-y-1">

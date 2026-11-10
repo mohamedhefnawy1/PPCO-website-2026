@@ -23,7 +23,7 @@ export default function CopyEmail({ email }: { email: string }) {
             /* clipboard unavailable: the mail link still works */
           }
         }}
-        className="relative grid w-12 place-items-center rounded-r-full border-l border-white/20 bg-ink text-white transition-colors hover:bg-ink-deep"
+        className="relative grid w-12 place-items-center rounded-r border-l border-white/20 bg-ink text-white transition-colors hover:bg-ink-deep"
         aria-label={copied ? "Email address copied" : "Copy email address"}
       >
         <AnimatePresence mode="wait" initial={false}>

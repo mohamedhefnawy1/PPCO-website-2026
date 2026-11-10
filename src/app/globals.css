@@ -9,7 +9,6 @@
   --color-green-deep: #238c15;
   --color-purple: #2d2481;
   --color-purple-bright: #6a5cff;
-  --color-sea: #e8eceb;
 
   --color-night: #0b0b0b;
   --color-mist: #f5f5f5;
@@ -22,6 +21,8 @@
 
 @layer base {
   :root {
+    /* One corner radius for the whole site: square shapes, very slightly eased. */
+    --radius: 4px;
     --header-h: 72px;
     --header-offset: var(--header-h);
   }
@@ -51,6 +52,11 @@
   }
   [id] {
     scroll-margin-top: calc(var(--header-h) + 16px);
+  }
+  input,
+  select,
+  textarea {
+    border-radius: var(--radius);
   }
   ::selection {
     background: var(--color-ink);
@@ -122,7 +128,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border-radius: 999px;
+    border-radius: var(--radius);
     padding: 0.85rem 1.4rem;
     font-size: 0.9375rem;
     font-weight: 500;
@@ -163,70 +169,84 @@
   }
   /* ── Liquid glass ──────────────────────────────────────────────────────────────
      Used wherever a surface or a button sits over a photo, the film or the map (never over a plain
-     colour, where there is nothing to refract). A soft white gradient, a light hairline border, a
-     highlight along the top edge and a backdrop blur; the dark variant adds a tint so white text
-     stays readable on bright photos. */
+     colour, where there is nothing to refract). Mostly clear: a faint white gradient, a light hairline
+     border, a highlight along the top edge and a backdrop blur. The dark variant keeps a light tint so
+     white text stays readable on bright photos. */
   .glass {
-    border: 1px solid rgb(255 255 255 / 0.26);
-    border-radius: 1.5rem;
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04)), rgb(14 14 14 / 0.34);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), inset 0 -1px 0 rgb(255 255 255 / 0.06), 0 10px 30px rgb(0 0 0 / 0.2);
-    -webkit-backdrop-filter: blur(16px) saturate(1.6);
-    backdrop-filter: blur(16px) saturate(1.6);
+    border: 1px solid rgb(255 255 255 / 0.28);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.02)), rgb(14 14 14 / 0.16);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28), 0 8px 24px rgb(0 0 0 / 0.12);
+    -webkit-backdrop-filter: blur(14px) saturate(1.5);
+    backdrop-filter: blur(14px) saturate(1.5);
     color: #fff;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.28);
   }
   .glass-light {
-    border: 1px solid rgb(255 255 255 / 0.75);
-    border-radius: 1.5rem;
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.6), rgb(255 255 255 / 0.34));
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 12px 36px rgb(20 30 30 / 0.12);
-    -webkit-backdrop-filter: blur(16px) saturate(1.5);
-    backdrop-filter: blur(16px) saturate(1.5);
+    border: 1px solid rgb(255 255 255 / 0.8);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.42), rgb(255 255 255 / 0.2));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 0 0 1px rgb(17 17 17 / 0.05), 0 12px 36px rgb(20 30 30 / 0.1);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    backdrop-filter: blur(14px) saturate(1.4);
     color: var(--color-ink);
   }
   .btn-glass {
-    border: 1px solid rgb(255 255 255 / 0.34);
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.24), rgb(255 255 255 / 0.08)), rgb(14 14 14 / 0.28);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.38), 0 6px 18px rgb(0 0 0 / 0.18);
-    -webkit-backdrop-filter: blur(14px) saturate(1.6);
-    backdrop-filter: blur(14px) saturate(1.6);
+    border: 1px solid rgb(255 255 255 / 0.36);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.16), rgb(255 255 255 / 0.04)), rgb(14 14 14 / 0.14);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.32), 0 6px 18px rgb(0 0 0 / 0.12);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
+    backdrop-filter: blur(12px) saturate(1.5);
     color: #fff;
+    text-shadow: 0 1px 2px rgb(0 0 0 / 0.28);
   }
   .btn-glass:hover {
-    border-color: rgb(255 255 255 / 0.6);
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.36), rgb(255 255 255 / 0.14)), rgb(14 14 14 / 0.22);
+    border-color: rgb(255 255 255 / 0.65);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.28), rgb(255 255 255 / 0.1)), rgb(14 14 14 / 0.1);
   }
   .btn-glass-light {
-    border: 1px solid rgb(255 255 255 / 0.8);
-    background: linear-gradient(180deg, rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.68));
+    border: 1px solid rgb(255 255 255 / 0.85);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.72), rgb(255 255 255 / 0.46));
     box-shadow: inset 0 1px 0 #fff, 0 4px 14px rgb(20 30 30 / 0.1);
-    -webkit-backdrop-filter: blur(14px) saturate(1.5);
-    backdrop-filter: blur(14px) saturate(1.5);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
     color: var(--color-ink);
   }
   .btn-glass-light:hover {
-    background: linear-gradient(180deg, rgb(255 255 255 / 1), rgb(255 255 255 / 0.86));
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.72));
+  }
+  /* The navigation bar: glass over the page banners (dark) and over everything else (light). */
+  .nav-glass {
+    border-bottom: 1px solid rgb(255 255 255 / 0.2);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.03)), rgb(14 14 14 / 0.12);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    backdrop-filter: blur(16px) saturate(1.5);
+  }
+  .nav-glass-light {
+    border-bottom: 1px solid rgb(17 17 17 / 0.08);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.72), rgb(255 255 255 / 0.55));
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    backdrop-filter: blur(16px) saturate(1.5);
   }
   /* Browsers without backdrop blur get a more solid surface, so text stays readable. */
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .glass,
-    .btn-glass {
+    .btn-glass,
+    .nav-glass {
       background: rgb(20 20 20 / 0.82);
     }
     .glass-light,
-    .btn-glass-light {
+    .btn-glass-light,
+    .nav-glass-light {
       background: rgb(255 255 255 / 0.94);
     }
   }
-  /* Rounded frame for photos and cards on the home page. */
+  /* Frame for photos and cards: square, with the site's slight corner radius. */
   .frame {
     overflow: hidden;
-    border-radius: 1.5rem;
-  }
-  @media (min-width: 768px) {
-    .frame {
-      border-radius: 2rem;
-    }
+    border-radius: var(--radius);
   }
   .link {
     display: inline-flex;

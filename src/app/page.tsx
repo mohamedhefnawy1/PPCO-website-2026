@@ -97,7 +97,7 @@ export default function Home() {
             speed: 55,
             reverse: r === 1,
             content: row.map(({ src, box }) => (
-              <span key={src} className="mr-3 flex h-28 w-44 shrink-0 items-center justify-center rounded-2xl bg-white px-5 py-4 md:h-32 md:w-52 md:px-6 md:py-5">
+              <span key={src} className="mr-3 flex h-28 w-44 shrink-0 items-center justify-center rounded bg-white px-5 py-4 md:h-32 md:w-52 md:px-6 md:py-5">
                 {/* Cropped to the logo's own outline and fitted inside the tile, so no logo is clipped or undersized.
                     An SVG <image> loads straight away, unlike a lazy <img> inside a moving band. */}
                 <svg viewBox={box.join(" ")} preserveAspectRatio="xMidYMid meet" className="h-full w-full" aria-hidden>
@@ -109,7 +109,7 @@ export default function Home() {
         />
       </section>
 
-      {/* Core services: names on the right, the photo and its glass caption on the left */}
+      {/* Core services: names on the left; on the right the photo, with the name and description on glass */}
       <section className="section">
         <div className="wrap">
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
@@ -119,8 +119,8 @@ export default function Home() {
               </Reveal>
               <RevealText text={services.title} className="heading h2 mt-4" />
             </div>
-            <Reveal delay={0.15} className="lg:col-span-4 lg:col-start-9">
-              <p className="lead text-muted">{services.body}</p>
+            <Reveal delay={0.15} className="lg:col-span-5 lg:col-start-8">
+              <p className="lead text-muted lg:[text-wrap:balance]">{services.body}</p>
             </Reveal>
           </div>
           <Reveal delay={0.1} className="mt-14 lg:mt-20">
@@ -129,7 +129,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Core disciplines: expanding panels */}
+      {/* Core disciplines: a plain row of four cards */}
       <section className="section">
         <div className="wrap">
           <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-8">
@@ -143,9 +143,9 @@ export default function Home() {
               <p>{disciplines.body}</p>
             </Reveal>
           </div>
-          <Reveal delay={0.1} className="mt-14 lg:mt-20">
+          <div className="mt-12 lg:mt-16">
             <Disciplines />
-          </Reveal>
+          </div>
         </div>
       </section>
 
@@ -171,7 +171,7 @@ export default function Home() {
               <p className="mt-5 max-w-[52ch] text-white/85 md:text-lg">{ppm.body[0]}</p>
             </Reveal>
             {ppmCapabilities.map(({ label, icon: Icon }, i) => (
-              <Reveal key={label} delay={0.08 + i * 0.04} className="glass flex min-h-[112px] flex-col justify-between !rounded-[1.25rem] p-4 md:p-5">
+              <Reveal key={label} delay={0.08 + i * 0.04} className="glass flex min-h-[112px] flex-col justify-between p-4 md:p-5">
                 <Icon className="size-5 text-white/80" strokeWidth={1.6} aria-hidden />
                 <p className="text-sm font-medium leading-tight md:text-base">{label}</p>
               </Reveal>
@@ -181,7 +181,7 @@ export default function Home() {
                 href={company.ppmUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-glass group flex items-center justify-between gap-4 rounded-[1.25rem] px-6 py-5 font-medium transition-[background,border-color] duration-200 md:px-7"
+                className="btn-glass group flex items-center justify-between gap-4 rounded px-6 py-5 font-medium transition-[background,border-color] duration-200 md:px-7"
               >
                 <span>
                   {ppm.cta}
@@ -203,7 +203,7 @@ export default function Home() {
           <RevealText text={story.title} className="heading h2 mt-4" />
           <div className="mt-10 lg:mt-14">
             <StoryVideos>
-              <div className="flex h-full flex-col justify-between gap-8 rounded-3xl bg-mist p-7 md:rounded-[2rem] md:p-8">
+              <div className="flex h-full flex-col justify-between gap-8 rounded bg-mist p-7 md:p-8">
                 <p className="lead text-ink">{story.body}</p>
                 <Link href="/company" className="link self-start">
                   About PPCO <ArrowRight className="size-4" aria-hidden />

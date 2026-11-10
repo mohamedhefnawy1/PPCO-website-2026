@@ -202,7 +202,7 @@ export function MotionToggle({ paused, onToggle, tone = "dark", className = "" }
     <button
       type="button"
       onClick={onToggle}
-      className={`inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm font-medium transition-[transform,background-color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.96] ${base} ${className}`}
+      className={`inline-flex h-10 items-center gap-2 rounded border px-4 text-sm font-medium transition-[transform,background-color,border-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] active:scale-[0.96] ${base} ${className}`}
     >
       {paused ? <PlayIcon /> : <PauseIcon />}
       {paused ? "Play motion" : "Pause motion"}

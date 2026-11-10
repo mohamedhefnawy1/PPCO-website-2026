@@ -60,9 +60,9 @@ const W = cx1 - cx0;
 const H = cy1 - cy0;
 // The drawing itself is a static file (kept out of the JavaScript bundle); the component lays it under the points.
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${cx0} ${cy0} ${W} ${H}" width="${W}" height="${H}">
-<defs><filter id="s" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#1c2a2a" flood-opacity="0.16"/></filter></defs>
-<path d="${neighbours.join("")}" fill="#f7f8f7" stroke="#cfd5d4" stroke-width="1" stroke-linejoin="round"/>
-<path d="${dedupe(round(path(saudi)))}" fill="#ffffff" stroke="#9aa3a2" stroke-width="1.25" stroke-linejoin="round" filter="url(#s)"/>
+<defs><filter id="s" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#1c2a2a" flood-opacity="0.12"/></filter></defs>
+<path d="${neighbours.join("")}" fill="#f1f3f2" stroke="#d3d8d7" stroke-width="1" stroke-linejoin="round"/>
+<path d="${dedupe(round(path(saudi)))}" fill="#e1e6e4" stroke="#8f9997" stroke-width="1.25" stroke-linejoin="round" filter="url(#s)"/>
 </svg>
 `;
 mkdirSync(new URL("../public/map/", import.meta.url), { recursive: true });

@@ -1,100 +1,38 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Photo from "../Photo";
-import { ease } from "../motion/primitives";
+import { Reveal } from "../motion/primitives";
 import { home } from "@/content/site";
 import { tc } from "@/lib/text";
 
-/** Expanding image panels: hover (or tap) a discipline to open it. */
+/**
+ * The four disciplines as a row of photos, each with its name and text on a sheet of glass inside the
+ * photo. Each card links to its part of the Services page; the photo eases in on hover.
+ */
 export default function Disciplines() {
   const items = home.disciplines.items;
-  const [active, setActive] = useState(0);
-
   return (
-    <div className="flex flex-col gap-2 lg:h-[620px] lg:flex-row">
-      {items.map((d, i) => {
-        const on = i === active;
-        return (
-          <motion.div
-            key={d.title}
-            layout
-            transition={{ layout: { duration: 0.7, ease } }}
-            onMouseEnter={() => setActive(i)}
-            className={`group relative min-h-[96px] overflow-hidden text-white ${on ? "h-[440px] lg:h-auto lg:flex-[3.2]" : "h-[96px] lg:h-auto lg:flex-1"}`}
-          >
-            <motion.div
-              className="absolute inset-0"
-              animate={{ scale: on ? 1 : 1.05 }}
-              transition={{ duration: 1.2, ease }}
-            >
-              <Photo src={d.image} alt="" sizes="(min-width: 1024px) 55vw, 100vw" className="h-full w-full" />
-            </motion.div>
-            <motion.div
-              aria-hidden
-              className="absolute inset-0 bg-night"
-              animate={{ opacity: on ? 0.35 : 0.62 }}
-              transition={{ duration: 0.6 }}
+    // Phones: a row to swipe through (like the services). Tablets: two by two. Desktop: one row of four.
+    <ul className="-mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4 lg:gap-6 [&::-webkit-scrollbar]:hidden">
+      {items.map((d, i) => (
+        <Reveal as="li" key={d.title} delay={i * 0.07} className="w-[82%] shrink-0 snap-center sm:w-auto">
+          <Link href={d.href} className="frame group relative block aspect-[4/5] sm:aspect-[3/4] lg:aspect-[3/4.4]">
+            <Photo
+              src={d.image}
+              alt=""
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+              className="h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
             />
-            <div aria-hidden className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(0,0,0,0.85))]" />
-
-            {/* The panel's control: covers the panel; the open panel's link sits above it */}
-            <button
-              type="button"
-              onClick={() => setActive(i)}
-              aria-expanded={on}
-              aria-controls={`discipline-${i}`}
-              aria-label={tc(d.title)}
-              className={`absolute inset-0 z-0 ${on ? "cursor-default" : "cursor-pointer"} focus-visible:outline-offset-[-4px]`}
-            />
-
-            {/* Collapsed label */}
-            <AnimatePresence>
-              {!on && (
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  aria-hidden
-                  className="pointer-events-none heading absolute bottom-6 left-6 text-2xl lg:bottom-8 lg:left-1/2 lg:-translate-x-1/2 lg:[writing-mode:vertical-rl] lg:rotate-180"
-                >
-                  {tc(d.title)}
-                </motion.span>
-              )}
-            </AnimatePresence>
-
-            {/* Expanded content */}
-            <AnimatePresence>
-              {on && (
-                <motion.div
-                  key="open"
-                  id={`discipline-${i}`}
-                  className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col gap-5 p-6 md:p-10 lg:flex-row lg:items-end lg:justify-between"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1, transition: { duration: 0.5, ease, delay: 0.25 } }}
-                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                >
-                  <div>
-                    <h3 className="heading text-[clamp(2.25rem,4vw,4rem)] leading-none">{tc(d.title)}</h3>
-                    <p className="mt-4 max-w-[38ch] text-white/85">{d.text}</p>
-                  </div>
-                  <Link
-                    href={d.href}
-                    className="pointer-events-auto grid size-14 shrink-0 place-items-center rounded-full bg-white text-ink transition-colors duration-200 hover:bg-mist"
-                    aria-label={`${tc(d.title)}: services`}
-                  >
-                    <ArrowUpRight className="size-5" />
-                  </Link>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        );
-      })}
-    </div>
+            <div className="glass absolute inset-x-3 bottom-3 p-5">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="heading text-2xl">{tc(d.title)}</h3>
+                <ArrowUpRight className="size-5 shrink-0 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden />
+              </div>
+              <p className="mt-2 text-[0.95rem] leading-snug text-white/90">{d.text}</p>
+            </div>
+          </Link>
+        </Reveal>
+      ))}
+    </ul>
   );
 }

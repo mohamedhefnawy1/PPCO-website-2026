@@ -180,7 +180,8 @@ export const home = {
     title: "We’re Here to Support Your Project",
     body: "Whether you’re planning, building, or expanding, PPCO is ready to collaborate.",
     button: "Contact Us",
-    image: up("2026/01/صورة-DSC_5261-كبيرة-Large.jpeg"),
+    // PPCO fleet photo supplied by the client, upscaled 4× (public/images).
+    image: "/images/cta-trucks.jpg",
   },
 };
 
@@ -193,6 +194,8 @@ export const ppm = {
   ],
   cta: "Visit PPM Website",
   image: up("2025/11/heavy-machinery-used-construction-industry-engineering-Large.jpeg"),
+  // The same photo, mirrored and extended to the right for the full-width home section (public/images).
+  wideImage: "/images/ppm-wide.jpg",
 };
 
 /* ───────────────────────── Company ───────────────────────── */

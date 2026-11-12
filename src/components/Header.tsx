@@ -90,7 +90,7 @@ export default function Header() {
       <motion.header
         animate={{ y: hidden && !menu && !mobile ? "-100%" : "0%" }}
         transition={{ duration: 0.45, ease }}
-        className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${light ? "bg-transparent" : "bg-white shadow-[0_1px_0_0_var(--color-line)]"}`}
+        className={`fixed inset-x-0 top-0 z-50 transition-[background,border-color] duration-300 ${light ? "nav-glass" : "nav-glass-light"}`}
         onKeyDown={(e) => {
           if (e.key !== "Escape") return;
           setMenu(null);
@@ -203,8 +203,8 @@ export default function Header() {
             onClick={() => (mobile ? closeMobile() : setMobile(true))}
             aria-expanded={mobile}
             aria-controls="mobile-menu"
-            className={`flex h-11 items-center gap-2.5 rounded-full border pl-4 pr-3.5 text-sm font-medium transition-[background-color,border-color,color] duration-200 active:scale-[0.97] lg:hidden ${
-              light ? "border-white/40 bg-black/25 text-white backdrop-blur-md hover:bg-black/40" : "border-line bg-white text-ink hover:border-ink"
+            className={`flex h-11 items-center gap-2.5 rounded border pl-4 pr-3.5 text-sm font-medium transition-[background-color,border-color,color] duration-200 active:scale-[0.97] lg:hidden ${
+              light ? "border-white bg-white text-ink" : "border-line bg-white text-ink hover:border-ink"
             }`}
           >
             <span>{mobile ? "Close" : "Menu"}</span>

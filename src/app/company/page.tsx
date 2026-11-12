@@ -6,13 +6,15 @@ import CtaBand from "@/components/CtaBand";
 import SubNav from "@/components/SubNav";
 import SafetyTable from "@/components/SafetyTable";
 import { Reveal, RevealText, ScrollText } from "@/components/motion/primitives";
-import { companyPage as c } from "@/content/site";
+import Counter from "@/components/Counter";
+import { companyPage as c, home } from "@/content/site";
 import { tc } from "@/lib/text";
 
 export const metadata: Metadata = { title: "Company", description: c.history.paragraphs[0] };
 
 const sections = [
   { id: "history", label: tc(c.history.title) },
+  { id: "track-record", label: "Track Record" },
   { id: "philosophy", label: tc(c.philosophy.title) },
   { id: "quality-safety", label: tc(c.qualitySafety.title) },
   { id: "people", label: tc(c.people.title) },
@@ -20,6 +22,7 @@ const sections = [
 
 export default function CompanyPage() {
   const { philosophy: ph, qualitySafety: qs } = c;
+  const { trackRecord } = home;
   const [historyLead, ...historyRest] = c.history.paragraphs;
   const [peopleLead, ...peopleRest] = c.people.paragraphs;
 
@@ -46,6 +49,37 @@ export default function CompanyPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Track record: the full figures (the home page shows them as one short row) */}
+      <section id="track-record" className="section scroll-mt-36 border-t border-line">
+        <div className="wrap grid gap-14 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-40">
+              <Reveal>
+                <p className="eyebrow">{tc(trackRecord.eyebrow)}</p>
+              </Reveal>
+              <RevealText text={trackRecord.title} className="heading h2 mt-4" />
+              <Reveal delay={0.15}>
+                <p className="mt-6 text-muted">{trackRecord.body}</p>
+              </Reveal>
+            </div>
+          </div>
+          <dl className="lg:col-span-7 lg:col-start-6">
+            {trackRecord.stats.map((st, i) => (
+              <Reveal
+                key={st.label}
+                delay={i * 0.05}
+                className={`flex flex-col gap-1 border-t border-line py-8 md:flex-row md:items-baseline md:justify-between md:gap-10 ${i % 2 ? "md:pl-[12%]" : ""}`}
+              >
+                <dt className="order-2 text-lg text-muted md:max-w-[16ch] md:text-right">{st.label}</dt>
+                <dd className="heading order-1 text-[clamp(3.5rem,8vw,7.5rem)] leading-none tracking-[-0.04em] text-ink">
+                  <Counter value={st.value} suffix={st.suffix} suffixClassName={st.suffix.length > 2 ? "ml-2 text-[0.32em] tracking-normal text-ink" : "text-green"} />
+                </dd>
+              </Reveal>
+            ))}
+          </dl>
         </div>
       </section>
 
@@ -104,7 +138,7 @@ export default function CompanyPage() {
                 <ul className="mt-6 space-y-3">
                   {b.items.map((it) => (
                     <li key={it} className="flex gap-4 border-t border-line pt-3">
-                      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-green/12 text-green-deep">
+                      <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded bg-green/12 text-green-deep">
                         <Check className="size-3.5" aria-hidden />
                       </span>
                       <span>{it}</span>

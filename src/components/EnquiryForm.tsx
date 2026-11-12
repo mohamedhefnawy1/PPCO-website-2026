@@ -118,7 +118,7 @@ export default function EnquiryForm() {
   if (status === "sent") {
     return (
       <motion.div role="status" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="border border-line bg-white p-8 md:p-10">
-        <span className="grid size-12 place-items-center rounded-full bg-green/15 text-green-deep">
+        <span className="grid size-12 place-items-center rounded bg-green/15 text-green-deep">
           <Check className="size-6" aria-hidden />
         </span>
         <h3 className="heading mt-6 text-2xl">Thank you, {f.name.split(" ")[0]}.</h3>

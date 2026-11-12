@@ -8,7 +8,7 @@ import Photo from "./Photo";
 import { videos } from "@/content/site";
 
 /** Lightweight video cards: the YouTube player only loads after a click. */
-export default function StoryVideos() {
+export default function StoryVideos({ children }: { children?: React.ReactNode }) {
   const [playing, setPlaying] = useState<string | null>(null);
 
   useEffect(() => {
@@ -24,18 +24,27 @@ export default function StoryVideos() {
 
   return (
     <>
-      <ul className="grid gap-6 md:grid-cols-2 md:gap-8">
-        {videos.map((v, i) => (
-          <Reveal as="li" key={v.id} delay={i * 0.12} className={i === 1 ? "md:mt-20" : ""}>
-            <VideoCard onPlay={() => setPlaying(v.id)} poster={v.poster} index={i} />
+      {/* The first film leads; the second sits beside it with the invitation to read more */}
+      <div className="grid gap-4 md:gap-5 lg:grid-cols-12">
+        <Reveal className="lg:col-span-8">
+          <VideoCard onPlay={() => setPlaying(videos[0].id)} poster={videos[0].poster} index={0} large />
+        </Reveal>
+        <div className="grid gap-4 sm:grid-cols-2 md:gap-5 lg:col-span-4 lg:grid-cols-1 lg:grid-rows-[auto_1fr]">
+          <Reveal delay={0.1}>
+            <VideoCard onPlay={() => setPlaying(videos[1].id)} poster={videos[1].poster} index={1} />
           </Reveal>
-        ))}
-      </ul>
+          {children && (
+            <Reveal delay={0.18} className="h-full">
+              {children}
+            </Reveal>
+          )}
+        </div>
+      </div>
 
       <AnimatePresence>
         {playing && (
           <motion.div
-            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/95 p-4 md:p-12"
+            className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4 backdrop-blur-xl md:p-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -47,7 +56,7 @@ export default function StoryVideos() {
             <button
               type="button"
               onClick={() => setPlaying(null)}
-              className="absolute right-4 top-4 grid size-11 place-items-center text-white hover:bg-white/10"
+              className="absolute right-4 top-4 grid size-11 place-items-center rounded bg-white text-ink transition-colors hover:bg-mist"
               aria-label="Close video"
               autoFocus
             >
@@ -57,7 +66,7 @@ export default function StoryVideos() {
               initial={{ scale: 0.97, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="aspect-video w-full max-w-6xl"
+              className="aspect-video w-full max-w-6xl overflow-hidden rounded"
               onClick={(e) => e.stopPropagation()}
             >
               <iframe
@@ -76,18 +85,23 @@ export default function StoryVideos() {
 }
 
 /** Video card: poster with a play button; the photo eases in slightly on hover. */
-function VideoCard({ onPlay, poster, index }: { onPlay: () => void; poster: string; index: number }) {
+function VideoCard({ onPlay, poster, index, large = false }: { onPlay: () => void; poster: string; index: number; large?: boolean }) {
   return (
-    <button type="button" onClick={onPlay} className="group relative block w-full overflow-hidden text-left" aria-label={`Play PPCO video ${index + 1}`}>
+    <button type="button" onClick={onPlay} className="frame group relative block w-full text-left" aria-label={`Play PPCO video ${index + 1}`}>
       <Photo
         src={poster}
         alt=""
-        sizes="(min-width: 768px) 50vw, 100vw"
+        sizes={large ? "(min-width: 1024px) 66vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
         className="aspect-video w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.03]"
       />
-      <span aria-hidden className="absolute inset-0 bg-black/25 transition-colors duration-300 group-hover:bg-black/15" />
-      <span className="absolute bottom-5 left-5 flex items-center gap-3 bg-white py-3 pl-4 pr-5 text-sm font-medium text-ink transition-colors duration-200 group-hover:bg-mist md:bottom-8 md:left-8">
-        <Play className="size-4 fill-current" aria-hidden /> Play video
+      <span aria-hidden className="absolute inset-0 bg-black/20 transition-colors duration-300 group-hover:bg-black/10" />
+      <span
+        aria-hidden
+        className={`absolute left-1/2 top-1/2 grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded bg-white text-ink shadow-[0_8px_24px_rgb(0_0_0/0.25)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-110 ${
+          large ? "size-16 md:size-24" : "size-14 md:size-16"
+        }`}
+      >
+        <Play className={`translate-x-[1px] fill-current ${large ? "size-5 md:size-7" : "size-4 md:size-5"}`} />
       </span>
     </button>
   );

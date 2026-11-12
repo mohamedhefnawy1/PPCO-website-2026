@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import Photo from "./Photo";
@@ -112,6 +112,43 @@ export default function ProjectsExplorer({ divisions, numbersTitle }: { division
   const [f, setF] = useState<Filters>(EMPTY);
   const [ready, setReady] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
+
+  // The filter column can be taller than the screen. Rather than give it a scrollbar of its own, it
+  // travels with the page: scrolling down moves it up until its last filter is on screen, where it
+  // holds; scrolling up brings it back down until its top is under the header. One scroll, no trap.
+  const filtersRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = filtersRef.current;
+    if (!el) return;
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const GAP = 24;
+    let lastY = window.scrollY;
+    let top = 0;
+    let started = false;
+    const place = () => {
+      if (!desktop.matches) return void el.style.removeProperty("top");
+      const y = window.scrollY;
+      // Where the column rests when it fits: just under the header (or the top edge while the header is hidden).
+      const offset = getComputedStyle(document.documentElement).getPropertyValue("--header-offset").trim();
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 0;
+      const max = (offset.startsWith("0") ? 0 : headerH) + GAP;
+      const min = Math.min(max, window.innerHeight - el.offsetHeight - GAP);
+      top = started ? Math.min(max, Math.max(min, top - (y - lastY))) : max;
+      started = true;
+      lastY = y;
+      el.style.top = `${top}px`;
+    };
+    place();
+    window.addEventListener("scroll", place, { passive: true });
+    window.addEventListener("resize", place, { passive: true });
+    const ro = new ResizeObserver(place);
+    ro.observe(el);
+    return () => {
+      window.removeEventListener("scroll", place);
+      window.removeEventListener("resize", place);
+      ro.disconnect();
+    };
+  }, []);
 
   // Filters live in the URL so a filtered view can be shared, and links from the map land filtered.
   useEffect(() => {
@@ -231,12 +268,12 @@ export default function ProjectsExplorer({ divisions, numbersTitle }: { division
               >
                 <span className="flex items-center gap-2">
                   <SlidersHorizontal className="size-4" aria-hidden /> Filters
-                  {activeCount > 0 && <span className="tabular grid min-w-5 place-items-center rounded-full bg-ink px-1.5 text-xs text-white">{activeCount}</span>}
+                  {activeCount > 0 && <span className="tabular grid min-w-5 place-items-center rounded bg-ink px-1.5 text-xs text-white">{activeCount}</span>}
                 </span>
                 <span className="text-muted">{panelOpen ? "Hide" : "Show"}</span>
               </button>
 
-              <div id="project-filters" className={`${panelOpen ? "mt-4 block" : "hidden"} space-y-8 lg:sticky lg:top-[calc(var(--header-offset)+24px)] lg:mt-0 lg:block lg:transition-[top] lg:duration-500`}>
+              <div id="project-filters" ref={filtersRef} className={`${panelOpen ? "mt-4 block" : "hidden"} space-y-8 lg:sticky lg:top-[calc(var(--header-offset)+24px)] lg:mt-0 lg:block`}>
                 <fieldset>
                   <legend className="text-sm font-medium text-muted">Division</legend>
                   <div className="mt-3 space-y-1">
